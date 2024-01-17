@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "766969143305",
+    "project_id": "devconst-coaching-app",
+    "storage_bucket": "devconst-coaching-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766969143305:android:739124e67205f5d0f358d8",
+        "android_client_info": {
+          "package_name": "com.devconst.basketball_coaching"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi2gRXyN1oOSdUqm6sjQWa8ZJkkaKWykE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
