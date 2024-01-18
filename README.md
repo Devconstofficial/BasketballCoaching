@@ -1,5 +1,5 @@
-# BasketballCoaching
-A Basketball coaching app to facilitate coach and students in their drills activities
+# basketball_coaching
+
 A new Flutter project.
 
 ## Getting Started

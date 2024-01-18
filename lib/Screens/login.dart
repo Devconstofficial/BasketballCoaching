@@ -1,5 +1,5 @@
 import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
-import 'package:basketball_coaching/Screens/Players/StudentRegistration/student_registration.dart';
+import 'package:basketball_coaching/Screens/Players/players_navbar.dart';
 import 'package:basketball_coaching/Components/main_button.dart';
 import 'package:basketball_coaching/Components/my_textfield.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const StudentRegistration()),
+                                builder: (context) => const PlayerNavBar()),
                           );
                         },
                         child: Text(

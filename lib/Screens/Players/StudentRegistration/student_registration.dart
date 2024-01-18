@@ -1,8 +1,8 @@
+import 'package:basketball_coaching/Screens/Players/Drills/drills_screen.dart';
 import 'package:basketball_coaching/Screens/Players/StudentRegistration/Widgets/age_selection.dart';
 import 'package:basketball_coaching/Components/main_button.dart';
 import 'package:basketball_coaching/Screens/Players/StudentRegistration/Widgets/selection_row.dart';
 import 'package:basketball_coaching/Screens/Players/StudentRegistration/Widgets/textfield.dart';
-import 'package:basketball_coaching/Screens/Players/players_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -102,7 +102,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PlayerNavBar()),
+                        builder: (context) => const DrillsScreen()),
                   );
                 },
                 child: const MainButton(text: 'Get Started')),

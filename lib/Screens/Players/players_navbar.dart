@@ -1,6 +1,6 @@
 import 'package:basketball_coaching/Screens/Players/DrillProgress/drill_progress.dart';
-import 'package:basketball_coaching/Screens/Players/Drills/drills_screen.dart';
 import 'package:basketball_coaching/Screens/Players/StudentProfiles/student_profile.dart';
+import 'package:basketball_coaching/Screens/Players/StudentRegistration/student_registration.dart';
 import 'package:basketball_coaching/Screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +15,7 @@ class PlayerNavBar extends StatefulWidget {
 
 class _PlayerNavBarState extends State<PlayerNavBar> {
   List<Widget> screens = [
-    const DrillsScreen(), 
+    const StudentRegistration(),
     const ChatScreen(),
     const DrillProgress(),
     const StudentProfile(),

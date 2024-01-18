@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package= "com.devconst.basketball_coaching">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="basketball_coaching"
         android:name="${applicationName}"
