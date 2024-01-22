@@ -22,7 +22,6 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        print('firebase initialized');
         return android;
       case TargetPlatform.iOS:
         throw UnsupportedError(

@@ -10,13 +10,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AddProgress extends StatefulWidget {
-  const AddProgress({super.key});
+  final String name;
+  final String studentId;
+  final String profile;
+  const AddProgress({
+    Key? key,
+    required this.name,
+    required this.studentId,
+    required this.profile,
+  }) : super(key: key);
 
   @override
   State<AddProgress> createState() => _AddProgressState();
 }
 
 class _AddProgressState extends State<AddProgress> {
+  
   double sliderValue = 0.1;
   @override
   Widget build(BuildContext context) {
@@ -30,7 +39,11 @@ class _AddProgressState extends State<AddProgress> {
             SizedBox(
               height: 16.h,
             ),
-            const StudentDetails(),
+            StudentDetails(
+              name: widget.name,
+              studentId: widget.studentId,
+              profile: widget.profile,
+            ),
             SizedBox(
               height: 22.h,
             ),

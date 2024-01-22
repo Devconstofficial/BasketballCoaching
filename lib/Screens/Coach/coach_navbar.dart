@@ -15,7 +15,7 @@ class CoachNavBar extends StatefulWidget {
 class _CoachNavBarState extends State<CoachNavBar> {
   List<Widget> screens = [
     const ChatScreen(),
-    const HomeScreen(),
+    HomeScreen(),
     const ProfileScreen(),
   ];
 
@@ -25,6 +25,10 @@ class _CoachNavBarState extends State<CoachNavBar> {
     true,
     false,
   ];
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

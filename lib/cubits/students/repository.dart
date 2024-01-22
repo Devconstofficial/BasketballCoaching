@@ -6,6 +6,7 @@ class StudentRepository {
 
   Future<List<Student>> getAllStudents() async {
     try {
+      print('Inside repo');
       return await dataProvider.getAllStudents();
     } catch (e) {
       throw Exception("Error fetching students: $e");

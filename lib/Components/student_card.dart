@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class StudentsCard extends StatefulWidget {
   final String text;
-  const StudentsCard({Key? key, required this.text}) : super(key: key);
+  const StudentsCard({Key? key, required this.text, required String studentId, required String profile, required String name}) : super(key: key);
 
   @override
   State<StudentsCard> createState() => _StudentsCardState();
@@ -102,10 +102,10 @@ class _StudentsCardState extends State<StudentsCard> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddProgress()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const AddProgress()),
+              // );
             },
             child: Text(
               'Add today’s progress\n+',

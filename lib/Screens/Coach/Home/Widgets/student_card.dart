@@ -1,33 +1,35 @@
+import 'package:basketball_coaching/Components/firebaseImageWidget.dart';
 import 'package:basketball_coaching/Screens/Coach/AddProgress/add_progress.dart';
 import 'package:basketball_coaching/Screens/Coach/Home/Widgets/card_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-class StudentsCard extends StatefulWidget {
-  final String text;
-  const StudentsCard({Key? key, required this.text}) : super(key: key);
+class StudentsCard extends StatelessWidget {
+  final String name;
+  final String studentId;
+  final String profile;
 
-  @override
-  State<StudentsCard> createState() => _StudentsCardState();
-}
-
-class _StudentsCardState extends State<StudentsCard> {
+  const StudentsCard({
+    Key? key,
+    required this.name,
+    required this.studentId,
+    required this.profile,
+  }) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 172.w,
-      height: 253.h,
+      width: 172,
+      height: 253,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.r),
+          borderRadius: BorderRadius.circular(5),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
-            color: const Color(0x3F000000),
-            blurRadius: 4.r,
-            offset: const Offset(1, 4),
+            color:Color(0x3F000000),
+            blurRadius: 4,
+            offset: Offset(1, 4),
             spreadRadius: 0,
           )
         ],
@@ -35,68 +37,74 @@ class _StudentsCardState extends State<StudentsCard> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 57.w, top: 16.h),
+            padding: const EdgeInsets.only(left: 57, top: 16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 58.w,
-                  height: 58.h,
-                  decoration: ShapeDecoration(
-                    image: const DecorationImage(
-                      image: ExactAssetImage('assets/images/cardimage.png'),
-                      fit: BoxFit.fill,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(29.r),
-                    ),
+                  width: 58,
+                  height: 58,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle, 
+                    color: Colors.white, 
+                  ),
+                  child: FirebaseNetworkImage(
+                    imagePath: profile,
+                    width: 58,
+                    height: 58, 
                   ),
                 ),
-                SizedBox(
-                  width: 33.w,
+                const SizedBox(
+                  width: 33,
                 ),
-                SvgPicture.asset(
-                  'assets/images/delete.svg',
-                ),
+                const Icon(Icons.delete),
               ],
             ),
           ),
-          SizedBox(
-            height: 6.h,
+          const SizedBox(
+            height: 6,
           ),
           Text(
-            widget.text,
+            name,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 16.sp,
+              fontSize: 16,
               fontFamily: 'Jua',
               fontWeight: FontWeight.w400,
               height: 0,
             ),
           ),
-          SizedBox(
-            height: 8.h,
+          const SizedBox(
+            height: 8,
           ),
-          Text(
+          const Text(
             'Add today’s progress\n+',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: const Color(0xFFAB7CE6),
-              fontSize: 14.sp,
+              color: Color(0xFFAB7CE6),
+              fontSize: 14,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w600,
               height: 0,
             ),
           ),
           InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddProgress()),
-                );
-              },
-              child: const CardButton()),
+            onTap: () {
+              // Navigate to AddProgress screen with student information
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddProgress(
+                    name: name,
+                    studentId: studentId,
+                    profile: profile,
+                  ),
+                ),
+              );
+            },
+            child: const CardButton(),
+          ),
         ],
       ),
     );

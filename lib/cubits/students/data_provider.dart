@@ -6,10 +6,20 @@ class StudentDataProvider {
 
   Future<List<Student>> getAllStudents() async {
     try {
+      print('inside data provider');
       final querySnapshot = await _firestore.collection('students').get();
-      return querySnapshot.docs.map((doc) => Student.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      // return querySnapshot.docs.map((doc) {
+      //   return {
+      //     'studentId': doc.id,  // Document ID is treated as student id
+      //     ...doc.data() as Map<String, dynamic>,
+      //   };
+      // }).toList();
+      List data = querySnapshot.docs;
+      List<Student> students = List.generate(data.length, (index) => Student.fromMap(data[index].id, data[index].data()));
+      return students;
     } catch (e) {
-      throw Exception("Error fetching students: $e");
+      print("Error fetching students: $e");
+      return [];
     }
   }
 
@@ -49,7 +59,7 @@ class StudentDataProvider {
     try {
       String newStudentId = "STD" + DateTime.now().millisecondsSinceEpoch.toString();
       
-      Student newStudent = Student(id: newStudentId, name: "", totalScore: 0.0, profile: "");
+      Student newStudent = Student(studentId: newStudentId, name: "", totalScore: 0.0, profile: "");
 
       await _firestore.collection('students').doc(newStudentId).set(newStudent.toMap());
       return newStudent;

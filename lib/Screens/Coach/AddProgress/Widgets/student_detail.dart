@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StudentDetails extends StatelessWidget {
-  const StudentDetails({super.key});
+  final String name;
+  final String studentId;
+  final String profile;
+  const StudentDetails({
+    Key? key,
+    required this.name,
+    required this.studentId,
+    required this.profile,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

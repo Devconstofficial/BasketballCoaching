@@ -21,6 +21,7 @@ class StudentCubit extends Cubit<StudentState> {
     emit(const StudentFetchLoading());
     try {
       final data = await repository.getAllStudents();
+      print('Inside Cubit');
       emit(StudentFetchSuccess(data: data));
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));

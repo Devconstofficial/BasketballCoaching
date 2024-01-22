@@ -2,7 +2,7 @@
 part of 'cubit.dart';
 
 class StudentState extends Equatable {
-  final List<Student>? data;
+  final List<Student>? data; // Update the data type
   final String? message;
   final Student? newStudent;
 
@@ -24,6 +24,7 @@ class StudentFetchLoading extends StudentState {
 
 class StudentFetchSuccess extends StudentState {
   const StudentFetchSuccess({required List<Student> data}) : super(data: data);
+  // Update the constructor parameter type
 }
 
 class StudentCreationSuccess extends StudentState {
