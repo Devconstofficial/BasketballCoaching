@@ -6,9 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class DrillPerformance extends StatelessWidget {
+class DrillPerformance extends StatefulWidget {
   const DrillPerformance({super.key});
 
+  @override
+  State<DrillPerformance> createState() => _DrillPerformanceState();
+}
+
+class _DrillPerformanceState extends State<DrillPerformance> {
+  int selectedMinutes = 0;
+  int selectedSeconds = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +134,14 @@ class DrillPerformance extends StatelessWidget {
                     SizedBox(
                       height: 22.h,
                     ),
-                    const ClockTimer()
+                    ClockTimer(
+                      onTimeSelected: (minutes, seconds) {
+                        setState(() {
+                          selectedMinutes = minutes;
+                          selectedSeconds = seconds;
+                        });
+                      },
+                    ),
                   ],
                 ),
                 SizedBox(

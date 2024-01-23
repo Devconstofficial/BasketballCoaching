@@ -7,30 +7,33 @@ class MyBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/images/backicon.svg',
-          ),
-          SizedBox(
-            width: 16.w,
-          ),
-          Text(
-            'Back',
-            style: TextStyle(
-              color: const Color(0xFFAB7CE6),
-              fontSize: 12.sp,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-              height: 0,
+    return Container(
+      padding: const EdgeInsets.only(left: 20, top: 10),
+      child: InkWell(
+        
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/images/backicon.svg',
             ),
-          )
-        ],
+            SizedBox(
+              width: 16.w,
+            ),
+            Text(
+              'Back',
+              style: TextStyle(
+                color: const Color(0xFFAB7CE6),
+                fontSize: 12.sp,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -3,17 +3,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class DropDown extends StatefulWidget {
-  const DropDown({super.key});
+  final List<String> options;
+  final Function(String?) onOptionSelected;
+
+  const DropDown({
+    Key? key,
+    required this.options,
+    required this.onOptionSelected,
+  }) : super(key: key);
 
   @override
   State<DropDown> createState() => _DropDownState();
 }
 
 class _DropDownState extends State<DropDown> {
+  String? selectedOption;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 324.w,
+      width: MediaQuery.of(context).size.width * 0.85,
       height: 52.h,
       decoration: ShapeDecoration(
         color: Colors.white,
@@ -32,18 +41,52 @@ class _DropDownState extends State<DropDown> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Select Drill',
-              style: TextStyle(
-                color: const Color(0xFF7A797B),
-                fontSize: 12.sp,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                height: 0,
+            Expanded(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: selectedOption,
+                icon: SvgPicture.asset('assets/images/dropdown.svg'),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedOption = newValue;
+                    widget.onOptionSelected(newValue);
+                  });
+                },
+                items: [
+                  // Placeholder item
+                  DropdownMenuItem<String>(
+                    value: null,
+                    child: Text(
+                      'Select an option',
+                      style: TextStyle(
+                        color: const Color(0xFF7A797B),
+                        fontSize: 12.sp,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                  // Actual options
+                  ...widget.options
+                      .map<DropdownMenuItem<String>>(
+                        (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: const Color(0xFF7A797B),
+                              fontSize: 12.sp,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
-            ),
-            SvgPicture.asset(
-              'assets/images/dropdown.svg',
             ),
           ],
         ),

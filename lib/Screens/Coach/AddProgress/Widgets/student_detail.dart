@@ -1,3 +1,4 @@
+import 'package:basketball_coaching/Components/firebaseImageWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,18 +20,18 @@ class StudentDetails extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 58.w,
-              height: 58.h,
-              decoration: ShapeDecoration(
-                image: const DecorationImage(
-                  image: ExactAssetImage('assets/images/cardimage.png'),
-                  fit: BoxFit.fill,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(29.r),
-                ),
-              ),
-            ),
+                    width: 58,
+                    height: 58,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle, 
+                      color: Colors.white, 
+                    ),
+                    child: FirebaseNetworkImage(
+                      imagePath: profile,
+                      width: 58,
+                      height: 58, 
+                    ),
+                  ),
             SizedBox(
               width: 8.w,
             ),
@@ -38,7 +39,7 @@ class StudentDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Jacob',
+                  name,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.sp,
@@ -47,16 +48,16 @@ class StudentDetails extends StatelessWidget {
                     height: 0,
                   ),
                 ),
-                Text(
-                  '12 year old boy',
-                  style: TextStyle(
-                    color: const Color(0xFF979595),
-                    fontSize: 16.sp,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 0,
-                  ),
-                )
+                // Text(
+                //   '12 year old boy',
+                //   style: TextStyle(
+                //     color: const Color(0xFF979595),
+                //     fontSize: 16.sp,
+                //     fontFamily: 'Inter',
+                //     fontWeight: FontWeight.w600,
+                //     height: 0,
+                //   ),
+                // )
               ],
             ),
           ],

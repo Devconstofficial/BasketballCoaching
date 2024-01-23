@@ -51,8 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildStudentGrid(List<Student> students) {
-    return SingleChildScrollView(
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.only(left: 19, right: 19, top: 55),
         child: Column(
           children: [
@@ -70,14 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 700,
+            SingleChildScrollView(
               child: GridView.builder(
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 20,
+                  mainAxisSpacing: 10, 
+                  crossAxisSpacing: 10, 
+                  childAspectRatio: 0.9,
                 ),
                 itemCount: students.length,
                 itemBuilder: (context, index) {
@@ -94,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-      ),
     );
   }
 }

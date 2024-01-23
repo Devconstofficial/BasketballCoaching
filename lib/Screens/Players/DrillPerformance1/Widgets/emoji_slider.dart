@@ -15,7 +15,11 @@ class _EmojiSliderState extends State<EmojiSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const MySlider(),
+        MySlider(
+          onSliderChanged: (value) => {
+
+          },
+        ),
         Padding(
           padding: EdgeInsets.only(left: 25.w),
           child: Row(

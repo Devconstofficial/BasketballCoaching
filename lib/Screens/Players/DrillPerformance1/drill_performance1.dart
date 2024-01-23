@@ -14,6 +14,8 @@ class DrillPerformance1 extends StatefulWidget {
 }
 
 class _DrillPerformance1State extends State<DrillPerformance1> {
+  int selectedMinutes = 0;
+  int selectedSeconds = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +158,14 @@ class _DrillPerformance1State extends State<DrillPerformance1> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 12.w),
-                                child: const ClockTimer(),
+                                child: ClockTimer(
+                                  onTimeSelected: (minutes, seconds) {
+                                    setState(() {
+                                      selectedMinutes = minutes;
+                                      selectedSeconds = seconds;
+                                    });
+                                  },
+                                ),
                               ),
                               SizedBox(
                                 height: 25.h,

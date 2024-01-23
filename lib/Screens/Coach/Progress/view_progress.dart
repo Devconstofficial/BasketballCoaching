@@ -15,17 +15,27 @@ class ViewProgress extends StatefulWidget {
 }
 
 class _ViewProgressState extends State<ViewProgress> {
+  String? selectedDrill;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        backgroundColor: const Color(0xFFF5F5F5),
+        foregroundColor: const Color(0xFFF5F5F5),
+        surfaceTintColor: const Color(0xFFF5F5F5),
+        shadowColor: Colors.white,
+        elevation: 0,
+        leading: const MyBackButton(),
+        leadingWidth: 100,
+      ),
         backgroundColor: const Color(0xFFF5F5F5),
         body: Padding(
-            padding: EdgeInsets.only(left: 23.w, right: 23.w, top: 60.h),
+            padding: EdgeInsets.only(left: 23.w, right: 23.w, top: 10.h),
             child: SingleChildScrollView(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const MyBackButton(),
                     Center(
                       child: Text(
                         'Progress',
@@ -78,7 +88,14 @@ class _ViewProgressState extends State<ViewProgress> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 10.w),
-                      child: const DropDown(),
+                      child: DropDown(
+                        options: ['Cone', 'Poll', '3-drill'], 
+                        onOptionSelected: (selectedOption) {
+                          setState(() {
+                            selectedDrill = selectedOption;
+                          });
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 28.h,

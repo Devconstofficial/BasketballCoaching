@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MySlider extends StatefulWidget {
-  const MySlider({super.key});
+  final ValueChanged<double>? onSliderChanged;
+
+  const MySlider({Key? key, required this.onSliderChanged}) : super(key: key);
 
   @override
   State<MySlider> createState() => _MySliderState();
@@ -19,10 +21,14 @@ class _MySliderState extends State<MySlider> {
           width: 210.w,
           child: Slider(
             value: sliderValue,
-            onChanged: (double value) {
+            onChanged: ( value) {
               setState(() {
                 sliderValue = value;
               });
+
+              if (widget.onSliderChanged != null) {
+                widget.onSliderChanged!(sliderValue);
+              }
             },
             min: 0,
             max: 1,
