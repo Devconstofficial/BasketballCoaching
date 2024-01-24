@@ -11,7 +11,7 @@ class MySlider extends StatefulWidget {
 }
 
 class _MySliderState extends State<MySlider> {
-  double sliderValue = 0.1;
+  double sliderValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class _MySliderState extends State<MySlider> {
           width: 210.w,
           child: Slider(
             value: sliderValue,
-            onChanged: ( value) {
+            onChanged: (value) {
               setState(() {
                 sliderValue = value;
               });

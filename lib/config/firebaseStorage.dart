@@ -19,8 +19,10 @@ Future<List<String>> getAllDrillsNames(String documentId) async {
   List<String> documentIds = [];
 
   try {
-    CollectionReference mainCollectionRef = FirebaseFirestore.instance.collection('students');
-    QuerySnapshot subCollectionSnapshot = await mainCollectionRef.doc(documentId).collection('performance').get();
+    CollectionReference mainCollectionRef =
+        FirebaseFirestore.instance.collection('students');
+    QuerySnapshot subCollectionSnapshot =
+        await mainCollectionRef.doc(documentId).collection('performance').get();
     subCollectionSnapshot.docs.forEach((DocumentSnapshot document) {
       documentIds.add(document.id);
     });
@@ -31,11 +33,11 @@ Future<List<String>> getAllDrillsNames(String documentId) async {
 }
 
 Future<String> uploadVideo(File videoFile, String fileName) async {
-    try {
-      final storage = storageRef.child('videos/$fileName');
-      await storage.putFile(videoFile);
-      return await storage.getDownloadURL();
-    } catch (e) {
-      throw Exception("Error uploading video: $e");
-    }
+  try {
+    final storage = storageRef.child('videos/$fileName');
+    await storage.putFile(videoFile);
+    return await storage.getDownloadURL();
+  } catch (e) {
+    throw Exception("Error uploading video: $e");
+  }
 }

@@ -3,46 +3,80 @@ part of 'cubit.dart';
 class PerformanceDataProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<PerformanceRecord>> getPerformanceRecords(String studentId, String drillName) async {
+  Future<List<PerformanceRecord>> getPerformanceRecords(
+      String studentId, String drillName) async {
     try {
-      final querySnapshot = await _firestore.collection('students/$studentId/performance/$drillName').get();
-      return querySnapshot.docs.map((doc) => PerformanceRecord.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      final querySnapshot = await _firestore
+          .collection('students/$studentId/performance/$drillName')
+          .get();
+      return querySnapshot.docs
+          .map((doc) =>
+              PerformanceRecord.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       throw Exception("Error fetching performance records: $e");
     }
   }
 
-  Future<void> addPerformanceRecord(String studentId, String drillName, PerformanceRecord record) async {
-  try {
-    final String yearMonthKey = "${record.date.year}-${record.date.month.toString().padLeft(2, '0')}";
-    final DocumentReference drillRef = _firestore.doc('students/$studentId/performance/$drillName');
-    final drillDocSnapshot = await drillRef.get();
+  Future<void> addPerformanceRecord(
+    String studentId,
+    File videoFile,
+    String fileName,
+    int selectedMinutes,
+    int selectedSeconds,
+    String selectedDrill,
+    String leaderboard,
+    int number,
+    List<int> scores,
+  ) async {
+    try {
+      final videoUrl = await uploadVideo(videoFile, fileName);
 
-    if (!drillDocSnapshot.exists) {
-      await drillRef.set({});
+      PerformanceRecord record = PerformanceRecord(
+        date: DateTime.now(),
+        leaderboard: leaderboard,
+        minutes: selectedMinutes,
+        seconds: selectedSeconds,
+        number: number,
+        totalScore: 0,
+        video: videoUrl,
+        scores: scores,
+      );
+
+      final String yearMonthKey =
+          "${record.date.year}-${record.date.month.toString().padLeft(2, '0')}";
+
+      final DocumentReference drillRef =
+          _firestore.doc('students/$studentId/performance/$selectedDrill');
+
+      final drillDocSnapshot = await drillRef.get();
+      if (!drillDocSnapshot.exists) {
+        await drillRef.set({});
+      }
+      await drillRef.set(
+        {
+          yearMonthKey: FieldValue.arrayUnion([record.toMap()])
+        },
+        SetOptions(merge: true),
+      );
+    } catch (e) {
+      throw Exception("Error adding performance record: $e");
     }
-
-    await drillRef.set(
-      {yearMonthKey: FieldValue.arrayUnion([record.toMap()])},
-      SetOptions(merge: true),
-    );
-  } catch (e) {
-    throw Exception("Error adding performance record: $e");
   }
-}
-
 
   Future<List<int>> getTotalScores(String studentId, String drillName) async {
     try {
-      final querySnapshot = await _firestore.collection('students/$studentId/performance/$drillName').get();
+      final querySnapshot = await _firestore
+          .collection('students/$studentId/performance/$drillName')
+          .get();
       final List<int> totalScores = [];
 
       for (final doc in querySnapshot.docs) {
         final monthData = doc.data() as Map<String, dynamic>;
         final totalScore = monthData.entries
             .where((entry) => entry.value is List)
-            .map((entry) =>
-                (entry.value as List).fold(0, (sum, record) => sum + (record['totalScore'] as int? ?? 0)))
+            .map((entry) => (entry.value as List).fold(
+                0, (sum, record) => sum + (record['totalScore'] as int? ?? 0)))
             .fold(0, (sum, score) => sum + score);
         totalScores.add(totalScore);
       }
@@ -53,7 +87,8 @@ class PerformanceDataProvider {
     }
   }
 
-  Future<List<int>> getLast7DaysTotalNumbers(String studentId, String drillName) async {
+  Future<List<int>> getLast7DaysTotalNumbers(
+      String studentId, String drillName) async {
     try {
       final now = DateTime.now();
       final DateTime last7DaysStart = now.subtract(Duration(days: 7));
@@ -68,7 +103,9 @@ class PerformanceDataProvider {
       for (final doc in querySnapshot.docs) {
         final date = (doc['date'] as Timestamp).toDate();
         final dateString = "${date.year}-${date.month}-${date.day}";
-        totalNumbers.update(dateString, (value) => value + (doc['number'] as int? ?? 0), ifAbsent: () => 0);
+        totalNumbers.update(
+            dateString, (value) => value + (doc['number'] as int? ?? 0),
+            ifAbsent: () => 0);
       }
 
       final List<int> last7DaysTotalNumbers = totalNumbers.values.toList();
@@ -78,11 +115,14 @@ class PerformanceDataProvider {
     }
   }
 
-  Future<Map<String, dynamic>> getImprovementDetails(String studentId, String drillName) async {
+  Future<Map<String, dynamic>> getImprovementDetails(
+      String studentId, String drillName) async {
     try {
       final now = DateTime.now();
-      final String currentMonthKey = "${now.year}-${now.month.toString().padLeft(2, '0')}";
-      final DateTime lastMonthStart = DateTime(now.year, now.month - 1, now.day);
+      final String currentMonthKey =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}";
+      final DateTime lastMonthStart =
+          DateTime(now.year, now.month - 1, now.day);
 
       final querySnapshot = await _firestore
           .collection('students/$studentId/performance/$drillName')
@@ -110,7 +150,11 @@ class PerformanceDataProvider {
         }
       }
 
-      final int improvementPercentage = ((currentMonthTotalDrills - lastMonthTotalDrills) / lastMonthTotalDrills * 100).toInt();
+      final int improvementPercentage =
+          ((currentMonthTotalDrills - lastMonthTotalDrills) /
+                  lastMonthTotalDrills *
+                  100)
+              .toInt();
 
       final Map<String, dynamic> improvementDetails = {
         'currentMonthTotalDrills': currentMonthTotalDrills,

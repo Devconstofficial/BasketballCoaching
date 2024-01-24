@@ -4,7 +4,8 @@ part of 'cubit.dart';
 class PerformanceRepository {
   final PerformanceDataProvider dataProvider = PerformanceDataProvider();
 
-  Future<List<PerformanceRecord>> getPerformanceRecords(String studentId, String drillName) async {
+  Future<List<PerformanceRecord>> getPerformanceRecords(
+      String studentId, String drillName) async {
     try {
       return await dataProvider.getPerformanceRecords(studentId, drillName);
     } catch (e) {
@@ -12,9 +13,28 @@ class PerformanceRepository {
     }
   }
 
-  Future<void> addPerformanceRecord(String studentId, String drillName, PerformanceRecord record) async {
+  Future<void> addPerformanceRecord(
+    String studentId,
+    File videoFile,
+    String fileName,
+    int selectedMinutes,
+    int selectedSeconds,
+    String selectedDrill,
+    String leaderboard,
+    int number,
+    List<int> scores,
+  ) async {
     try {
-      await dataProvider.addPerformanceRecord(studentId, drillName, record);
+      await dataProvider.addPerformanceRecord(
+          studentId,
+          videoFile,
+          fileName,
+          selectedMinutes,
+          selectedSeconds,
+          selectedDrill,
+          leaderboard,
+          number,
+          scores);
     } catch (e) {
       throw Exception("Error adding performance record: $e");
     }
