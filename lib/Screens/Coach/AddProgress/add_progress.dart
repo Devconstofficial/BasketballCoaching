@@ -94,16 +94,19 @@ class _AddProgressState extends State<AddProgress> {
   }
 
   Future<void> addPerformance() async {
+    String filePath = file?.path ?? "";
+
     _performanceCubit.addPerformanceRecord(
-        widget.studentId,
-        file!,
-        file!.path.split('/').last,
-        selectedMinutes,
-        selectedSeconds,
-        selectedDrill!,
-        leaderboard,
-        drillNumbers,
-        scores);
+      widget.studentId,
+      file ?? File(""),
+      (filePath.isNotEmpty) ? filePath.split('/').last : "",
+      selectedMinutes,
+      selectedSeconds,
+      selectedDrill!,
+      leaderboard,
+      drillNumbers,
+      scores,
+    );
   }
 
   @override
@@ -351,10 +354,8 @@ class _AddProgressState extends State<AddProgress> {
                   onTap: () {
                     if (drillNumbers == 0 ||
                         selectedDrill == "" ||
-                        selectedMinutes == 0 ||
-                        selectedSeconds == 0) {
-                      print(
-                          "$drillNumbers, \n $selectedDrill,\n $selectedMinutes\n $selectedSeconds");
+                        selectedMinutes == 0) {
+                      print("$selectedDrill");
                       SnackBarHelper.showSnackbar(context,
                           "Drill, Time and No. of times performed is required");
                     } else {

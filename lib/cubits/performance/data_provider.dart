@@ -30,9 +30,21 @@ class PerformanceDataProvider {
     List<int> scores,
   ) async {
     try {
-      final videoUrl = await uploadVideo(videoFile, fileName);
+      var videoUrl = "";
+      PerformanceRecord record;
 
-      PerformanceRecord record = PerformanceRecord(
+      if (videoFile != null && videoFile.path.isNotEmpty) {
+        videoUrl = await uploadVideo(videoFile, fileName);
+        VideoCubit videoCubit = VideoCubit();
+        VideoRecord videoRecord = VideoRecord(
+          file: videoUrl,
+          leaderboard: leaderboard,
+          type: selectedDrill,
+        );
+        videoCubit.uploadVideo(videoRecord, studentId);
+      }
+
+      record = PerformanceRecord(
         date: DateTime.now(),
         leaderboard: leaderboard,
         minutes: selectedMinutes,
@@ -53,6 +65,7 @@ class PerformanceDataProvider {
       if (!drillDocSnapshot.exists) {
         await drillRef.set({});
       }
+
       await drillRef.set(
         {
           yearMonthKey: FieldValue.arrayUnion([record.toMap()])
