@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 60.h),
                   InkWell(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const CoachNavBar()),

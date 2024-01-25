@@ -3,16 +3,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MyBackButton extends StatelessWidget {
-  const MyBackButton({super.key});
+  final VoidCallback? onTapFunction;
+
+  const MyBackButton({Key? key, this.onTapFunction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 20, top: 10),
       child: InkWell(
-        
         onTap: () {
-          Navigator.pop(context);
+          if (onTapFunction != null) {
+            onTapFunction!();
+          } else {
+            Navigator.pop(context);
+          }
         },
         child: Row(
           children: [

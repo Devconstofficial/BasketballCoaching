@@ -2,7 +2,9 @@ import 'package:basketball_coaching/Screens/Coach/DrillResults/fielddrill_result
 import 'package:basketball_coaching/Components/back_button.dart';
 import 'package:basketball_coaching/Components/barchart.dart';
 import 'package:basketball_coaching/Components/drop_down.dart';
+import 'package:basketball_coaching/Screens/Coach/Home/home_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/Widgets/performance_comparison.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,16 +21,20 @@ class _ViewProgressState extends State<ViewProgress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 40,
-        backgroundColor: const Color(0xFFF5F5F5),
-        foregroundColor: const Color(0xFFF5F5F5),
-        surfaceTintColor: const Color(0xFFF5F5F5),
-        shadowColor: Colors.white,
-        elevation: 0,
-        leading: const MyBackButton(),
-        leadingWidth: 100,
-      ),
+        appBar: AppBar(
+          toolbarHeight: 40,
+          backgroundColor: const Color(0xFFF5F5F5),
+          foregroundColor: const Color(0xFFF5F5F5),
+          surfaceTintColor: const Color(0xFFF5F5F5),
+          shadowColor: Colors.white,
+          elevation: 0,
+          leading: MyBackButton(
+            onTapFunction: () {
+              CustomNavigate().popAllNavigateToRoute(context, HomeScreen());
+            },
+          ),
+          leadingWidth: 100,
+        ),
         backgroundColor: const Color(0xFFF5F5F5),
         body: Padding(
             padding: EdgeInsets.only(left: 23.w, right: 23.w, top: 10.h),
@@ -89,7 +95,7 @@ class _ViewProgressState extends State<ViewProgress> {
                     Padding(
                       padding: EdgeInsets.only(left: 10.w),
                       child: DropDown(
-                        options: ['Cone', 'Poll', '3-drill'], 
+                        options: ['Cone', 'Poll', '3-drill'],
                         onOptionSelected: (selectedOption) {
                           setState(() {
                             selectedDrill = selectedOption;
