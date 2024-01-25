@@ -9,8 +9,14 @@ class VideoDataProvider {
       final querySnapshot =
           await _firestore.collection('videos').doc(studentId).get();
       List data = querySnapshot['videos'];
-      List<VideoRecord> videos = List.generate(
-          data.length, (index) => VideoRecord.fromMap(data[index]));
+      List<VideoRecord> videos = List.generate(data.length, (index) {
+        DateTime dateTime = DateTime.parse(data[index]['dateTime']);
+        String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+        return VideoRecord.fromMap(
+          data[index]..['dateTime'] = date,
+        );
+      });
+
       if (type.isNotEmpty) {
         videos = videos.where((video) => video.type == type).toList();
       }
@@ -23,18 +29,24 @@ class VideoDataProvider {
 
   Future<void> uploadVideo(VideoRecord videoRecord, String studentId) async {
     try {
-      final documentRef = _firestore.collection('videos').doc(studentId);
+      final studentDocRef = _firestore.collection('videos').doc(studentId);
 
-      final videoList = await documentRef
-          .get()
-          .then((snapshot) => snapshot['videos'] as List?);
+      final newVideoMap = {
+        'date': Timestamp.fromDate(videoRecord.date),
+        'file': videoRecord.file,
+        'leaderboard': videoRecord.leaderboard,
+        'type': videoRecord.type,
+      };
 
-      if (videoList != null) {
-        videoList.add(videoRecord.toMap());
-        await documentRef.update({'videos': videoList});
+      final studentDocSnapshot = await studentDocRef.get();
+
+      if (studentDocSnapshot.exists) {
+        await studentDocRef.update({
+          'videos': FieldValue.arrayUnion([newVideoMap]),
+        });
       } else {
-        await documentRef.set({
-          'videos': [videoRecord.toMap()]
+        await studentDocRef.set({
+          'videos': [newVideoMap],
         });
       }
     } catch (e) {

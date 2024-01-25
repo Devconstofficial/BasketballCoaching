@@ -40,6 +40,7 @@ class PerformanceDataProvider {
           file: videoUrl,
           leaderboard: leaderboard,
           type: selectedDrill,
+          date: DateTime.now(),
         );
         videoCubit.uploadVideo(videoRecord, studentId);
       }
