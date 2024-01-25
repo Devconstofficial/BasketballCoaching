@@ -9,6 +9,7 @@ import 'package:basketball_coaching/Components/slider.dart';
 import 'package:basketball_coaching/Components/video_player_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/AddProgress/Widgets/student_detail.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:basketball_coaching/config/firebaseStorage.dart';
 import 'package:basketball_coaching/models/file_extension.dart';
 import 'package:flutter/material.dart';
@@ -202,12 +203,8 @@ class _AddProgressState extends State<AddProgress> {
                     ? const NoMediaPicked()
                     : GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VideoPlayerScreen(file!),
-                            ),
-                          );
+                          CustomNavigate()
+                              .pushRoute(context, VideoPlayerScreen(file!));
                         },
                         child: Hero(
                           tag: file!.path,
@@ -244,13 +241,8 @@ class _AddProgressState extends State<AddProgress> {
                                       size: 50,
                                     ),
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              VideoPlayerScreen(file!),
-                                        ),
-                                      );
+                                      CustomNavigate().pushRoute(
+                                          context, VideoPlayerScreen(file!));
                                     },
                                   ),
                                 ),
@@ -379,11 +371,7 @@ class _AddProgressState extends State<AddProgress> {
                           "Drill, Time and No. of times performed is required");
                     } else {
                       addPerformance(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ViewProgress()),
-                      );
+                      CustomNavigate().pushRoute(context, ViewProgress());
                     }
                   },
                   child: const MainButton(text: 'Add to Profile')),
