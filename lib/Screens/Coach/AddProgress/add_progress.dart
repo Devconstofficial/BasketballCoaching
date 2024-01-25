@@ -42,6 +42,7 @@ class _AddProgressState extends State<AddProgress> {
   int drillNumbers = 0;
   String leaderboard = "";
   List<int> scores = [];
+  bool hasVideo = false;
 
   final ImagePicker picker = ImagePicker();
   File? file;
@@ -66,6 +67,7 @@ class _AddProgressState extends State<AddProgress> {
       final file = File(mediaFile.path);
       setState(() {
         this.file = file;
+        hasVideo = !hasVideo;
       });
     } else {
       // User canceled the picker
@@ -93,20 +95,24 @@ class _AddProgressState extends State<AddProgress> {
     }
   }
 
-  Future<void> addPerformance() async {
+  Future<void> addPerformance(BuildContext context) async {
     String filePath = file?.path ?? "";
-
-    _performanceCubit.addPerformanceRecord(
-      widget.studentId,
-      file ?? File(""),
-      (filePath.isNotEmpty) ? filePath.split('/').last : "",
-      selectedMinutes,
-      selectedSeconds,
-      selectedDrill!,
-      leaderboard,
-      drillNumbers,
-      scores,
-    );
+    try {
+      _performanceCubit.addPerformanceRecord(
+        widget.studentId,
+        file ?? File(""),
+        (filePath.isNotEmpty) ? filePath.split('/').last : "",
+        selectedMinutes,
+        selectedSeconds,
+        selectedDrill!,
+        leaderboard,
+        drillNumbers,
+        scores,
+      );
+      SnackBarHelper.showSnackbar(context, "Record added Successfully");
+    } catch (e) {
+      SnackBarHelper.showSnackbar(context, "Error Adding Records");
+    }
   }
 
   @override
@@ -151,21 +157,34 @@ class _AddProgressState extends State<AddProgress> {
                   SizedBox(
                     width: 215.w,
                   ),
-                  SvgPicture.asset(
-                    'assets/images/delete.svg',
-                  ),
-                  SizedBox(
-                    width: 8.5.w,
-                  ),
-                  Text(
-                    'delete',
-                    style: TextStyle(
-                      color: const Color(0xFFA43434),
-                      fontSize: 10.sp,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
+                  GestureDetector(
+                    onTap: () {
+                      if (hasVideo == true) {
+                        setState(() {
+                          hasVideo = !hasVideo;
+                          file!.path == null;
+                          file == null;
+                        });
+                      }
+                    },
+                    child: Row(children: [
+                      SvgPicture.asset(
+                        'assets/images/delete.svg',
+                      ),
+                      SizedBox(
+                        width: 8.5.w,
+                      ),
+                      Text(
+                        'delete',
+                        style: TextStyle(
+                          color: const Color(0xFFA43434),
+                          fontSize: 10.sp,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
+                      ),
+                    ]),
                   )
                 ],
               ),
@@ -179,7 +198,7 @@ class _AddProgressState extends State<AddProgress> {
                   right: 10,
                   bottom: 10,
                 ),
-                child: file == null
+                child: !hasVideo
                     ? const NoMediaPicked()
                     : GestureDetector(
                         onTap: () {
@@ -359,7 +378,7 @@ class _AddProgressState extends State<AddProgress> {
                       SnackBarHelper.showSnackbar(context,
                           "Drill, Time and No. of times performed is required");
                     } else {
-                      addPerformance();
+                      addPerformance(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
