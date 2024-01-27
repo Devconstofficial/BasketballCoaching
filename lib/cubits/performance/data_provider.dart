@@ -78,24 +78,121 @@ class PerformanceDataProvider {
     }
   }
 
-  Future<List<int>> getTotalScores(String studentId, String drillName) async {
+  Future<List<Map<String, dynamic>>> getTotalOfDrillDataByMonth(
+      String studentId, String drillName) async {
     try {
       final querySnapshot = await _firestore
           .collection('students/$studentId/performance/$drillName')
           .get();
-      final List<int> totalScores = [];
+
+      final List<Map<String, dynamic>> monthlyScores = [];
 
       for (final doc in querySnapshot.docs) {
         final monthData = doc.data() as Map<String, dynamic>;
+        final month =
+            DateFormat('MMM').format(monthData['date'].toDate()).toLowerCase();
+
         final totalScore = monthData.entries
             .where((entry) => entry.value is List)
             .map((entry) => (entry.value as List).fold(
                 0, (sum, record) => sum + (record['totalScore'] as int? ?? 0)))
             .fold(0, (sum, score) => sum + score);
-        totalScores.add(totalScore);
+
+        final totalNumber = monthData.entries
+            .where((entry) => entry.value is List)
+            .map((entry) => (entry.value as List).fold(
+                0, (sum, record) => sum + (record['number'] as int? ?? 0)))
+            .fold(0, (sum, number) => sum + number);
+
+        monthlyScores.add({
+          'month': month,
+          'totalScore': totalScore,
+          'totalNumber': totalNumber,
+        });
       }
 
-      return totalScores;
+      return monthlyScores;
+    } catch (e) {
+      throw Exception("Error getting total scores: $e");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllDrillsTotalResultsByMonth(
+    String studentId,
+  ) async {
+    try {
+      final querySnapshot =
+          await _firestore.collection('students/$studentId/performance').get();
+
+      final Map<String, Map<String, dynamic>> monthlyScores = {};
+
+      for (final doc in querySnapshot.docs) {
+        final drillData = doc.data() as Map<String, dynamic>;
+
+        for (final MapEntry<String, dynamic> monthDataEntry
+            in drillData.entries) {
+          final monthData = monthDataEntry.value;
+
+          if (monthData is List<dynamic>) {
+            // Handle the case where monthData is a list of maps
+            for (final drillEntry in monthData) {
+              if (drillEntry is Map<String, dynamic>) {
+                final date = drillEntry['date'];
+
+                if (date != null) {
+                  final month = DateFormat('MMM')
+                      .format(date.toDate()) // Assuming 'date' is a Timestamp
+                      .toLowerCase();
+
+                  final totalScore = (drillEntry['scores'] as List)
+                      .map((score) => score as int? ?? 0)
+                      .fold(0, (sum, score) => sum + score);
+
+                  final totalNumber = drillEntry['number'] as int? ?? 0;
+
+                  if (monthlyScores.containsKey(month)) {
+                    monthlyScores[month]!['totalScore'] += totalScore;
+                    monthlyScores[month]!['totalNumber'] += totalNumber;
+                  } else {
+                    monthlyScores[month] = {
+                      'month': month,
+                      'totalScore': totalScore,
+                      'totalNumber': totalNumber,
+                    };
+                  }
+                }
+              }
+            }
+          } else if (monthData is Map<String, dynamic>) {
+            final date = monthData['date'];
+
+            if (date != null) {
+              final month = DateFormat('MMM')
+                  .format(date.toDate()) // Assuming 'date' is a Timestamp
+                  .toLowerCase();
+
+              final totalScore = (monthData['scores'] as List)
+                  .map((score) => score as int? ?? 0)
+                  .fold(0, (sum, score) => sum + score);
+
+              final totalNumber = monthData['number'] as int? ?? 0;
+
+              if (monthlyScores.containsKey(month)) {
+                monthlyScores[month]!['totalScore'] += totalScore;
+                monthlyScores[month]!['totalNumber'] += totalNumber;
+              } else {
+                monthlyScores[month] = {
+                  'month': month,
+                  'totalScore': totalScore,
+                  'totalNumber': totalNumber,
+                };
+              }
+            }
+          }
+        }
+      }
+
+      return monthlyScores.values.toList();
     } catch (e) {
       throw Exception("Error getting total scores: $e");
     }

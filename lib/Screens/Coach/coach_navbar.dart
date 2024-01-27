@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CoachNavBar extends StatefulWidget {
   static const String id = 'MyNavBar';
+  static final GlobalKey<_CoachNavBarState> navBarKey =
+      GlobalKey<_CoachNavBarState>();
   const CoachNavBar({Key? key});
 
   @override
@@ -33,6 +35,7 @@ class _CoachNavBarState extends State<CoachNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: CoachNavBar.navBarKey,
       backgroundColor: Colors.white,
       body: screens[currentindex],
       bottomNavigationBar: BottomNavigationBar(

@@ -9,6 +9,7 @@ import 'package:basketball_coaching/Components/slider.dart';
 import 'package:basketball_coaching/Components/video_player_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/AddProgress/Widgets/student_detail.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
+import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:basketball_coaching/config/firebaseStorage.dart';
 import 'package:basketball_coaching/models/file_extension.dart';
@@ -68,7 +69,7 @@ class _AddProgressState extends State<AddProgress> {
       final file = File(mediaFile.path);
       setState(() {
         this.file = file;
-        hasVideo = !hasVideo;
+        hasVideo = true;
       });
     } else {
       // User canceled the picker
@@ -126,7 +127,12 @@ class _AddProgressState extends State<AddProgress> {
           surfaceTintColor: const Color(0xFFF5F5F5),
           shadowColor: Colors.white,
           elevation: 0,
-          leading: const MyBackButton(),
+          leading: MyBackButton(
+            onTapFunction: () {
+              CoachNavBar.navBarKey.currentState?.setState(() {});
+              Navigator.pop(context);
+            },
+          ),
           leadingWidth: 100,
         ),
         backgroundColor: const Color(0xFFF5F5F5),
@@ -371,7 +377,11 @@ class _AddProgressState extends State<AddProgress> {
                           "Drill, Time and No. of times performed is required");
                     } else {
                       addPerformance(context);
-                      CustomNavigate().pushRoute(context, ViewProgress());
+                      CustomNavigate().pushRoute(
+                          context,
+                          ViewProgress(
+                            studentId: widget.studentId,
+                          ));
                     }
                   },
                   child: const MainButton(text: 'Add to Profile')),

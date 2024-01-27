@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VideoRecord {
   late String file;
-  late String leaderboard;
-  late String type;
+  late String? leaderboard;
+  late String? type;
   late DateTime date;
 
   VideoRecord({
@@ -42,7 +42,7 @@ class VideoRecord {
     return VideoRecord(
       file: map['file'] as String,
       leaderboard: map['leaderboard'] as String,
-      type: map['type'] as String,
+      type: map['type'] != null ? map['type'] as String : "",
       date: (map['date'] as Timestamp).toDate(),
     );
   }

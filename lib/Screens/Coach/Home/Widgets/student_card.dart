@@ -103,7 +103,11 @@ class StudentsCard extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              CustomNavigate().pushRoute(context, ViewProgress());
+              CustomNavigate().pushRoute(
+                  context,
+                  ViewProgress(
+                    studentId: studentId,
+                  ));
             },
             child: const CardButton(),
           ),

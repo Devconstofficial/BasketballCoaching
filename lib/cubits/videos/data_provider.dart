@@ -10,16 +10,16 @@ class VideoDataProvider {
           await _firestore.collection('videos').doc(studentId).get();
       List data = querySnapshot['videos'];
       List<VideoRecord> videos = List.generate(data.length, (index) {
-        DateTime dateTime = DateTime.parse(data[index]['dateTime']);
+        DateTime dateTime = (data[index]['date'] as Timestamp).toDate();
+
         String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
         return VideoRecord.fromMap(
           data[index]..['dateTime'] = date,
         );
       });
 
-      if (type.isNotEmpty) {
-        videos = videos.where((video) => video.type == type).toList();
-      }
+      videos =
+          videos.where((video) => video.type == type.toLowerCase()).toList();
       return videos;
     } catch (e) {
       print("Error fetching videos: $e");

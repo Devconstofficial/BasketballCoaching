@@ -15,4 +15,8 @@ class CustomNavigate {
       MaterialPageRoute(builder: (context) => screen),
     );
   }
+
+  void popToFirst(BuildContext context) {
+    Navigator.popUntil(context, (route) => route.isFirst);
+  }
 }

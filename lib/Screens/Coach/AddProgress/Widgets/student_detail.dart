@@ -20,18 +20,18 @@ class StudentDetails extends StatelessWidget {
         Row(
           children: [
             Container(
-                    width: 58,
-                    height: 58,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle, 
-                      color: Colors.white, 
-                    ),
-                    child: FirebaseNetworkImage(
-                      imagePath: profile,
-                      width: 58,
-                      height: 58, 
-                    ),
-                  ),
+              width: 58,
+              height: 58,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: FirebaseNetworkImage(
+                imagePath: profile,
+                width: 58,
+                height: 58,
+              ),
+            ),
             SizedBox(
               width: 8.w,
             ),

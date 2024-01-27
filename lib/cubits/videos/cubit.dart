@@ -27,7 +27,7 @@ class VideoCubit extends Cubit<VideoState> {
   Future<void> uploadVideo(VideoRecord videoRecord, String studentId) async {
     try {
       await repository.uploadVideo(videoRecord, studentId);
-      getAllVideos(studentId, videoRecord.type);
+      getAllVideos(studentId, videoRecord.type!);
     } catch (e) {
       emit(VideoFetchFailed(message: e.toString()));
     }

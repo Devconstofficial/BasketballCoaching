@@ -3,13 +3,23 @@ import 'package:basketball_coaching/Screens/Coach/Home/Widgets/card_button.dart'
 import 'package:basketball_coaching/Screens/chat_screen.dart';
 import 'package:basketball_coaching/Screens/Players/StudentRegistration/student_registration.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class StudentsCard extends StatefulWidget {
   final String text;
-  const StudentsCard({Key? key, required this.text, required String studentId, required String profile, required String name}) : super(key: key);
+  final String name;
+  final String studentId;
+  final String profile;
+  const StudentsCard(
+      {Key? key,
+      required this.text,
+      required this.name,
+      required this.studentId,
+      required this.profile})
+      : super(key: key);
 
   @override
   State<StudentsCard> createState() => _StudentsCardState();
@@ -68,14 +78,13 @@ class _StudentsCardState extends State<StudentsCard> {
                   width: 33.w,
                 ),
                 InkWell(
-                  onTap:  () {
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const StudentRegistration()),
                     );
                   },
-
                   child: SvgPicture.asset(
                     'assets/images/delete.svg',
                   ),
@@ -121,10 +130,8 @@ class _StudentsCardState extends State<StudentsCard> {
           ),
           InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ViewProgress()),
-                );
+                CustomNavigate().pushRoute(
+                    context, ViewProgress(studentId: widget.studentId));
               },
               child: const CardButton()),
         ],

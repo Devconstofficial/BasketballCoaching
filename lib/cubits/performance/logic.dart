@@ -1,19 +1,30 @@
 // performance_logic.dart
-import '../../models/performance.dart';
 import 'cubit.dart';
 
 class PerformanceLogic {
   final PerformanceDataProvider dataProvider = PerformanceDataProvider();
 
-  Future<List<int>> getTotalScores(String studentId, String drillName) async {
+  Future<List<Map<String, dynamic>>> getTotalOfDrillDataByMonth(
+      String studentId, String drillName) async {
     try {
-      return await dataProvider.getTotalScores(studentId, drillName);
+      return await dataProvider.getTotalOfDrillDataByMonth(
+          studentId, drillName);
     } catch (e) {
       throw Exception("Error getting total scores: $e");
     }
   }
 
-  Future<List<int>> getLast7DaysTotalNumbers(String studentId, String drillName) async {
+  Future<List<Map<String, dynamic>>> getAllDrillsTotalResultsByMonth(
+      String studentId) async {
+    try {
+      return await dataProvider.getAllDrillsTotalResultsByMonth(studentId);
+    } catch (e) {
+      throw Exception("Error getting improvement details: $e");
+    }
+  }
+
+  Future<List<int>> getLast7DaysTotalNumbers(
+      String studentId, String drillName) async {
     try {
       return await dataProvider.getLast7DaysTotalNumbers(studentId, drillName);
     } catch (e) {
@@ -21,7 +32,8 @@ class PerformanceLogic {
     }
   }
 
-  Future<Map<String, dynamic>> getImprovementDetails(String studentId, String drillName) async {
+  Future<Map<String, dynamic>> getImprovementDetails(
+      String studentId, String drillName) async {
     try {
       return await dataProvider.getImprovementDetails(studentId, drillName);
     } catch (e) {

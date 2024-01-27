@@ -1,5 +1,7 @@
 import 'package:basketball_coaching/Screens/splash_screen.dart';
+import 'package:basketball_coaching/cubits/performance/cubit.dart';
 import 'package:basketball_coaching/cubits/students/cubit.dart';
+import 'package:basketball_coaching/cubits/videos/cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,12 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider<StudentCubit>(
               create: (context) => StudentCubit(),
+            ),
+            BlocProvider<VideoCubit>(
+              create: (context) => VideoCubit(),
+            ),
+            BlocProvider<PerformanceCubit>(
+              create: (context) => PerformanceCubit(),
             ),
           ],
           child: MaterialApp(
