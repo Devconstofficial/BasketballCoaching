@@ -7,7 +7,7 @@ import 'package:basketball_coaching/Components/back_button.dart';
 import 'package:basketball_coaching/Screens/Coach/Home/home_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/Widgets/performance_comparison.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
-import 'package:basketball_coaching/config/firebaseStorage.dart';
+import 'package:basketball_coaching/firebase/firebaseStorage.dart';
 import 'package:basketball_coaching/cubits/videos/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

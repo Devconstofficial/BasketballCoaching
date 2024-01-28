@@ -4,18 +4,24 @@ part of 'cubit.dart';
 class StudentDataProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  String generateStudentRandomId() {
+    const String prefix = 'STD';
+    final String randomDigits =
+        (1000000 * Random().nextDouble()).floor().toString().padLeft(6, '0');
+    return '$prefix$randomDigits';
+  }
+
   Future<List<Student>> getAllStudents() async {
     try {
-      print('inside data provider');
       final querySnapshot = await _firestore.collection('students').get();
-      // return querySnapshot.docs.map((doc) {
-      //   return {
-      //     'studentId': doc.id,  // Document ID is treated as student id
-      //     ...doc.data() as Map<String, dynamic>,
-      //   };
-      // }).toList();
       List data = querySnapshot.docs;
-      List<Student> students = List.generate(data.length, (index) => Student.fromMap(data[index].id, data[index].data()));
+      List<Student> students = List.generate(
+        data.length,
+        (index) => Student.fromMap(
+          data[index].id,
+          data[index].data(),
+        ),
+      );
       return students;
     } catch (e) {
       print("Error fetching students: $e");
@@ -33,7 +39,10 @@ class StudentDataProvider {
 
   Future<void> updateProfile(String studentId, String newProfile) async {
     try {
-      await _firestore.collection('students').doc(studentId).update({'profile': newProfile});
+      await _firestore
+          .collection('students')
+          .doc(studentId)
+          .update({'profile': newProfile});
     } catch (e) {
       throw Exception("Error updating profile: $e");
     }
@@ -41,7 +50,10 @@ class StudentDataProvider {
 
   Future<void> updateName(String studentId, String newName) async {
     try {
-      await _firestore.collection('students').doc(studentId).update({'name': newName});
+      await _firestore
+          .collection('students')
+          .doc(studentId)
+          .update({'name': newName});
     } catch (e) {
       throw Exception("Error updating name: $e");
     }
@@ -49,22 +61,43 @@ class StudentDataProvider {
 
   Future<void> updateTotalScore(String studentId, double newTotalScore) async {
     try {
-      await _firestore.collection('students').doc(studentId).update({'totalScore': newTotalScore});
+      await _firestore
+          .collection('students')
+          .doc(studentId)
+          .update({'totalScore': newTotalScore});
     } catch (e) {
       throw Exception("Error updating total score: $e");
     }
   }
 
-  Future<Student> createNewStudent() async {
+  Future<Student> createNewStudent(String name, String coachId) async {
     try {
-      String newStudentId = "STD" + DateTime.now().millisecondsSinceEpoch.toString();
-      
-      Student newStudent = Student(studentId: newStudentId, name: "", totalScore: 0.0, profile: "");
-
-      await _firestore.collection('students').doc(newStudentId).set(newStudent.toMap());
+      final String studentId = generateStudentRandomId();
+      Student newStudent =
+          Student(studentId: studentId, name: name, totalScore: 0, profile: "");
+      final CollectionReference studentsCollection =
+          FirebaseFirestore.instance.collection('students');
+      await _firestore
+          .collection('students')
+          .doc(studentId)
+          .set(newStudent.toMap());
+      await studentsCollection.doc(studentId).collection('performance').add({});
+      addStudentToCoach(coachId, studentId);
       return newStudent;
     } catch (e) {
       throw Exception("Error creating new student: $e");
     }
+  }
+
+  Future<void> addStudentToCoach(String coachId, String studentId) async {
+    final DocumentReference coachDocRef =
+        FirebaseFirestore.instance.collection('coaches').doc(coachId);
+
+    await coachDocRef.update({
+      'students': FieldValue.arrayUnion(
+          [FirebaseFirestore.instance.doc('students/$studentId')]),
+    });
+
+    print('Student added to coach\'s document');
   }
 }

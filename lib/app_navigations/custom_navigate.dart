@@ -19,4 +19,11 @@ class CustomNavigate {
   void popToFirst(BuildContext context) {
     Navigator.popUntil(context, (route) => route.isFirst);
   }
+
+  void pushReplacement(BuildContext context, Widget screen) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
 }

@@ -1,3 +1,6 @@
+import 'package:basketball_coaching/Screens/login.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -177,25 +180,34 @@ class Profile extends StatelessWidget {
                           SizedBox(
                             height: 27.h,
                           ),
-                          Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/out.svg',
-                              ),
-                              SizedBox(
-                                width: 42.w,
-                              ),
-                              Text(
-                                'logout',
-                                style: TextStyle(
-                                  color: const Color(0xFF979595),
-                                  fontSize: 12.sp,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                  height: 0,
+                          GestureDetector(
+                            onTap: () {
+                              FirebaseAuth.instance.signOut();
+                              CustomNavigate().pushReplacement(
+                                context,
+                                const LoginScreen(),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/out.svg',
                                 ),
-                              )
-                            ],
+                                SizedBox(
+                                  width: 42.w,
+                                ),
+                                Text(
+                                  'logout',
+                                  style: TextStyle(
+                                    color: const Color(0xFF979595),
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       ),

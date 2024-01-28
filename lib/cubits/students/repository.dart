@@ -37,9 +37,9 @@ class StudentRepository {
     }
   }
 
-  Future<Student> createNewStudent() async {
+  Future<Student> createNewStudent(String name, String coachId) async {
     try {
-      return await dataProvider.createNewStudent();
+      return await dataProvider.createNewStudent(name, coachId);
     } catch (e) {
       throw Exception("Error creating new student: $e");
     }

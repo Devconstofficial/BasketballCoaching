@@ -1,4 +1,4 @@
-import 'package:basketball_coaching/config/firebaseStorage.dart';
+import 'package:basketball_coaching/firebase/firebaseStorage.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseNetworkImage extends StatelessWidget {
@@ -36,7 +36,7 @@ class FirebaseNetworkImage extends StatelessWidget {
             fit: fit,
           );
         } else {
-          return const SizedBox(); 
+          return const SizedBox();
         }
       },
     );

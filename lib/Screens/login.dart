@@ -1,7 +1,11 @@
+import 'package:basketball_coaching/Components/my_snackbar.dart';
 import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
 import 'package:basketball_coaching/Screens/Players/players_navbar.dart';
 import 'package:basketball_coaching/Components/main_button.dart';
 import 'package:basketball_coaching/Components/my_textfield.dart';
+import 'package:basketball_coaching/Screens/signup.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,9 +17,58 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool signInSuccess = false;
   @override
   void initState() {
     super.initState();
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> signIn() async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      setState(() {
+        signInSuccess = true;
+      });
+      print("sign in pass");
+    } catch (e) {
+      print("sign in failed $e");
+    }
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+        .hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  bool _validateFields() {
+    return (_validateEmail(_emailController.text) == null &&
+        _validatePassword(_passwordController.text) == null);
+  }
+
+  void signInNavigate() {
+    SnackBarHelper.showSnackbar(context, "Logged In");
+    CustomNavigate().pushReplacement(context, const CoachNavBar());
   }
 
   @override
@@ -67,22 +120,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   SizedBox(height: 52.h),
                   MyTextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     label: 'Email...',
                   ),
                   SizedBox(height: 26.h),
                   MyTextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: _passwordController,
                     label: 'Password...',
                   ),
                   SizedBox(height: 60.h),
                   InkWell(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CoachNavBar()),
-                        );
-                      },
-                      child: const MainButton(text: 'SIGN IN')),
+                    onTap: () async {
+                      try {
+                        if (_validateFields()) {
+                          await signIn();
+                          if (signInSuccess) {
+                            signInNavigate();
+                          }
+                        } else {
+                          SnackBarHelper.showSnackbar(
+                              context, "Enter all fields");
+                        }
+                      } catch (e) {
+                        SnackBarHelper.showSnackbar(context, "Login failed");
+                      }
+                    },
+                    child: const MainButton(text: 'SIGN IN'),
+                  ),
                   SizedBox(height: 22.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -99,11 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PlayerNavBar()),
-                          );
+                          CustomNavigate()
+                              .pushRoute(context, const SignupScreen());
                         },
                         child: Text(
                           'Sign up',

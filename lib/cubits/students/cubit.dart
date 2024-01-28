@@ -1,5 +1,6 @@
 // cubit.dart
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,7 +32,7 @@ class StudentCubit extends Cubit<StudentState> {
   Future<void> deleteStudent(String studentId) async {
     try {
       await repository.deleteStudent(studentId);
-      getAllStudents(); 
+      getAllStudents();
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
     }
@@ -40,7 +41,7 @@ class StudentCubit extends Cubit<StudentState> {
   Future<void> updateProfile(String studentId, String newProfile) async {
     try {
       await repository.updateProfile(studentId, newProfile);
-      getAllStudents(); 
+      getAllStudents();
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
     }
@@ -49,16 +50,16 @@ class StudentCubit extends Cubit<StudentState> {
   Future<void> updateTotalScore(String studentId, double newTotalScore) async {
     try {
       await repository.updateTotalScore(studentId, newTotalScore);
-      getAllStudents(); 
+      getAllStudents();
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
     }
   }
 
-  Future<void> createNewStudent() async {
+  Future<void> createNewStudent(String name, String coachId) async {
     try {
-      final newStudent = await repository.createNewStudent();
-      getAllStudents(); 
+      final newStudent = await repository.createNewStudent(name, coachId);
+      getAllStudents();
       emit(StudentCreationSuccess(newStudent: newStudent));
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));

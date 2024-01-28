@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:basketball_coaching/config/firebaseStorage.dart';
+import 'package:basketball_coaching/firebase/firebaseStorage.dart';
 import 'package:basketball_coaching/cubits/videos/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';

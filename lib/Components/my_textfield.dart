@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: must_be_immutable
 class MyTextField extends StatefulWidget {
   final String label;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
   MyTextField({
     super.key,
     required this.label,
+    required this.controller,
+    required this.keyboardType,
   });
-
-  TextEditingController? controller;
 
   @override
   State<MyTextField> createState() => _MyTextFieldState();
@@ -26,6 +28,8 @@ class _MyTextFieldState extends State<MyTextField> {
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: TextField(
+        controller: widget.controller,
+        keyboardType: widget.keyboardType,
         cursorColor: const Color(0xFF979595),
         style: const TextStyle(
           color: Color(0xFF979595),

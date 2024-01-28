@@ -11,7 +11,7 @@ import 'package:basketball_coaching/Screens/Coach/AddProgress/Widgets/student_de
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
 import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
-import 'package:basketball_coaching/config/firebaseStorage.dart';
+import 'package:basketball_coaching/firebase/firebaseStorage.dart';
 import 'package:basketball_coaching/models/file_extension.dart';
 import 'package:flutter/material.dart';
 import '../../../cubits/performance/cubit.dart';

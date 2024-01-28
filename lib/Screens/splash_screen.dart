@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
 import 'package:basketball_coaching/Screens/login.dart';
+import 'package:basketball_coaching/wrappers/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   movetoNextScreen() {
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()));
+          MaterialPageRoute(builder: (context) => const CoachNavBar()));
     });
   }
 
