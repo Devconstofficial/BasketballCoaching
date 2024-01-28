@@ -54,4 +54,16 @@ class PerformanceCubit extends Cubit<PerformanceState> {
       emit(PerformanceAddRecordFailed(message: e.toString()));
     }
   }
+
+  Future<void> getLast7DaysTotalNumbers(
+      String studentId, String drillName) async {
+    emit(PerformanceListLoading());
+    try {
+      final data =
+          await repository.getLast7DaysTotalNumbers(studentId, drillName);
+      emit(PerformanceListFetchSuccess(dataList: data));
+    } catch (e) {
+      emit(PerformanceListFetchFailed(message: e.toString()));
+    }
+  }
 }

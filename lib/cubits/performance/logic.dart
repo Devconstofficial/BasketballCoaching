@@ -23,15 +23,6 @@ class PerformanceLogic {
     }
   }
 
-  Future<List<int>> getLast7DaysTotalNumbers(
-      String studentId, String drillName) async {
-    try {
-      return await dataProvider.getLast7DaysTotalNumbers(studentId, drillName);
-    } catch (e) {
-      throw Exception("Error getting last 7 days total numbers: $e");
-    }
-  }
-
   Future<Map<String, dynamic>> getImprovementDetails(
       String studentId, String drillName) async {
     try {

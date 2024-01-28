@@ -266,7 +266,7 @@ class _PerformanceState extends State<Performance> {
         ),
         Center(
           child: Text(
-            'Overall ${calculateImprovementPercentage() < 0 ? 'Decline' : 'Improved'} ${calculateImprovementPercentage().abs().toStringAsFixed(2)}%',
+            'Overall ${calculateImprovementPercentage() < 0 ? 'Decline' : 'Improved'} ${calculateImprovementPercentage().abs().toStringAsFixed(2) == 'NaN' ? 0 : calculateImprovementPercentage().abs().toStringAsFixed(2)}%',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: const Color(0xFFAB7CE6),

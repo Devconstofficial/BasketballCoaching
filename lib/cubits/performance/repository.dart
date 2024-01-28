@@ -39,4 +39,13 @@ class PerformanceRepository {
       throw Exception("Error adding performance record: $e");
     }
   }
+
+  Future<List<Map<String, dynamic>>> getLast7DaysTotalNumbers(
+      String studentId, String drillName) async {
+    try {
+      return await dataProvider.getLast7DaysTotalNumbers(studentId, drillName);
+    } catch (e) {
+      throw Exception("Error getting last 7 days total numbers: $e");
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:basketball_coaching/Components/barchart.dart';
 import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
+import 'package:basketball_coaching/cubits/performance/cubit.dart';
 import 'package:http/http.dart' as http;
 import 'package:basketball_coaching/Screens/Coach/DrillResults/fielddrill_results.dart';
 import 'package:basketball_coaching/Components/back_button.dart';
@@ -34,6 +36,16 @@ class _ViewProgressState extends State<ViewProgress> {
   bool resultsFetched = false;
   bool hasVideos = false;
   List<String> documentIds = [];
+  bool screenFlag = false;
+  List<Map<String, dynamic>> performance = [
+    {'height': 100, 'day': 'Mon'},
+    {'height': 80, 'day': 'Tue'},
+    {'height': 0, 'day': 'Wed'},
+    {'height': 20, 'day': 'Thu'},
+    {'height': 30, 'day': 'Fri'},
+    {'height': 23, 'day': 'Sat'},
+    {'height': 40, 'day': 'Sun'},
+  ];
 
   Future<void> drillNames() async {
     var drills = await getAllDrillsNames(widget.studentId);
@@ -46,6 +58,9 @@ class _ViewProgressState extends State<ViewProgress> {
   initState() {
     super.initState();
     drillNames();
+    setState(() {
+      screenFlag = false;
+    });
   }
 
   Future<Uint8List?> _generateThumbnailFromUrl(String videoUrl) async {
@@ -70,6 +85,11 @@ class _ViewProgressState extends State<ViewProgress> {
       await videoCubit.getAllVideos(widget.studentId, selectedDrill!);
     }
 
+    Future<void> daysPerformanceResult() async {
+      final PerformanceCubit cubit = BlocProvider.of<PerformanceCubit>(context);
+      await cubit.getLast7DaysTotalNumbers(widget.studentId, selectedDrill!);
+    }
+
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 40,
@@ -88,7 +108,7 @@ class _ViewProgressState extends State<ViewProgress> {
         ),
         backgroundColor: const Color(0xFFF5F5F5),
         body: Padding(
-          padding: EdgeInsets.only(left: 23.w, right: 23.w, top: 10.h),
+          padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 10.h),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,6 +156,8 @@ class _ViewProgressState extends State<ViewProgress> {
                         resultsFetched = false;
                         hasVideos = false;
                         fetchAllVideos();
+                        daysPerformanceResult();
+                        screenFlag = true;
                       });
                     },
                   ),
@@ -143,189 +165,246 @@ class _ViewProgressState extends State<ViewProgress> {
                 SizedBox(
                   height: 28.h,
                 ),
-                BlocBuilder<VideoCubit, VideoState>(
-                  builder: (context, state) {
-                    if (state is VideoFetchLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is VideoFetchSuccess) {
-                      hasVideos = state.data!.isNotEmpty;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Previous Videos Results',
-                            textAlign: TextAlign.start,
+                screenFlag
+                    ? BlocBuilder<PerformanceCubit, PerformanceState>(
+                        builder: (context, state) {
+                        if (state is PerformanceListLoading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (state is PerformanceListFetchSuccess) {
+                          return BarChart(data: state.dataList);
+                        } else if (state is PerformanceListFetchFailed) {
+                          return Text(
+                            'Error loading Performance of $selectedDrill: ${state.message}',
                             style: TextStyle(
-                              color: const Color(0xFF89898A),
-                              fontSize: 12.sp,
+                              color: const Color(0xFFAB7CE6),
+                              fontSize: 14.sp,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w600,
                               height: 0,
                             ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          hasVideos
-                              ? Column(
-                                  children: state.data!
-                                      .map(
-                                        (video) => InkWell(
-                                          onTap: () {
-                                            CustomNavigate().pushRoute(
-                                                context,
-                                                FieldDrill(
-                                                  videoFile: video.file,
-                                                  leaderboard:
-                                                      video.leaderboard,
-                                                ));
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.95,
-                                            height: 280.h,
-                                            margin: const EdgeInsets.only(
-                                                bottom: 10),
-                                            decoration: const ShapeDecoration(
-                                              color: Color(0xFFFEFEFE),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(10.w),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 6.h,
-                                                  ),
-                                                  FutureBuilder<Uint8List?>(
-                                                    future:
-                                                        _generateThumbnailFromUrl(
-                                                            video.file),
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      if (snapshot.data !=
-                                                          null) {
-                                                        return Image.memory(
-                                                          snapshot.data!,
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.85,
-                                                          height: 200,
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      } else {
-                                                        return const Center(
-                                                            child:
-                                                                CircularProgressIndicator());
-                                                      }
-                                                    },
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        video.type!,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 16.sp,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 0,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        DateFormat('yyyy-MM-dd')
-                                                            .format(video.date),
-                                                        style: TextStyle(
-                                                          color:
-                                                              Colors.grey[600],
-                                                          fontSize: 14.sp,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 0,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        'assets/images/chart.svg',
-                                                      ),
-                                                      SizedBox(
-                                                        width: 7.w,
-                                                      ),
-                                                      Text(
-                                                        'Check Drill results here',
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                              0xFFAB7CE6),
-                                                          fontSize: 14.sp,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 0,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                )
-                              : Text(
-                                  'No videos available for the selected drill.',
+                          );
+                        } else {
+                          return Container();
+                        }
+                      })
+                    : Container(),
+                SizedBox(
+                  height: 28.h,
+                ),
+                screenFlag
+                    ? BlocBuilder<VideoCubit, VideoState>(
+                        builder: (context, state) {
+                          if (state is VideoFetchLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (state is VideoFetchSuccess) {
+                            hasVideos = state.data!.isNotEmpty;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Previous Videos Results',
+                                  textAlign: TextAlign.start,
                                   style: TextStyle(
-                                    color: const Color(0xFFAB7CE6),
-                                    fontSize: 14.sp,
+                                    color: const Color(0xFF89898A),
+                                    fontSize: 12.sp,
                                     fontFamily: 'Inter',
                                     fontWeight: FontWeight.w600,
                                     height: 0,
                                   ),
                                 ),
-                        ],
-                      );
-                    } else if (state is VideoFetchFailed) {
-                      return Text(
-                        'Error loading videos: ${state.message}',
-                        style: TextStyle(
-                          color: const Color(0xFFAB7CE6),
-                          fontSize: 14.sp,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                hasVideos
+                                    ? Column(
+                                        children: state.data!
+                                            .map(
+                                              (video) => InkWell(
+                                                onTap: () {
+                                                  CustomNavigate().pushRoute(
+                                                      context,
+                                                      FieldDrill(
+                                                        videoFile: video.file,
+                                                        leaderboard:
+                                                            video.leaderboard,
+                                                      ));
+                                                },
+                                                child: Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.95,
+                                                  height: 280.h,
+                                                  margin: const EdgeInsets.only(
+                                                      bottom: 10),
+                                                  decoration:
+                                                      const ShapeDecoration(
+                                                    color: Color(0xFFFEFEFE),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                    ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.all(10.w),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 6.h,
+                                                        ),
+                                                        FutureBuilder<
+                                                            Uint8List?>(
+                                                          future:
+                                                              _generateThumbnailFromUrl(
+                                                                  video.file),
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            if (snapshot.data !=
+                                                                null) {
+                                                              return Image
+                                                                  .memory(
+                                                                snapshot.data!,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.85,
+                                                                height: 200,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              );
+                                                            } else {
+                                                              return SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.85,
+                                                                height: 200,
+                                                                child: const Center(
+                                                                    child:
+                                                                        CircularProgressIndicator()),
+                                                              );
+                                                            }
+                                                          },
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10.h,
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              video.type!,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 16.sp,
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                height: 0,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              DateFormat(
+                                                                      'yyyy-MM-dd')
+                                                                  .format(video
+                                                                      .date),
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .grey[600],
+                                                                fontSize: 14.sp,
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                height: 0,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10.h,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            SvgPicture.asset(
+                                                              'assets/images/chart.svg',
+                                                            ),
+                                                            SizedBox(
+                                                              width: 7.w,
+                                                            ),
+                                                            Text(
+                                                              'Check Drill results here',
+                                                              style: TextStyle(
+                                                                color: const Color(
+                                                                    0xFFAB7CE6),
+                                                                fontSize: 14.sp,
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                height: 0,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                      )
+                                    : Text(
+                                        'No videos available for the selected drill.',
+                                        style: TextStyle(
+                                          color: const Color(0xFFAB7CE6),
+                                          fontSize: 14.sp,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w600,
+                                          height: 0,
+                                        ),
+                                      ),
+                              ],
+                            );
+                          } else if (state is VideoFetchFailed) {
+                            return Text(
+                              'Error loading videos: ${state.message}',
+                              style: TextStyle(
+                                color: const Color(0xFFAB7CE6),
+                                fontSize: 14.sp,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      )
+                    : Container(),
                 SizedBox(
                   height: 20.h,
                 ),

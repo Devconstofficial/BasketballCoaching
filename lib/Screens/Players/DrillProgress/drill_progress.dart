@@ -41,7 +41,7 @@ class DrillProgress extends StatelessWidget {
                   SizedBox(
                     height: 46.h,
                   ),
-                  const BarChart(),
+                  // const BarChart(),
                   SizedBox(
                     height: 46.h,
                   ),

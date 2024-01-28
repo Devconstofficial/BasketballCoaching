@@ -198,32 +198,91 @@ class PerformanceDataProvider {
     }
   }
 
-  Future<List<int>> getLast7DaysTotalNumbers(
+  Future<List<Map<String, dynamic>>> getLast7DaysTotalNumbers(
       String studentId, String drillName) async {
     try {
+      print("enter method");
       final now = DateTime.now();
       final DateTime last7DaysStart = now.subtract(Duration(days: 7));
 
+      final currentYearMonth =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}';
+
       final querySnapshot = await _firestore
-          .collection('students/$studentId/performance/$drillName')
-          .where('date', isGreaterThanOrEqualTo: last7DaysStart)
+          .collection('students')
+          .doc(studentId)
+          .collection('performance')
+          .doc(drillName)
           .get();
+      print("got path");
 
-      final Map<String, int> totalNumbers = {};
+      final List<Map<String, dynamic>> last7DaysTotalNumbers = [];
 
-      for (final doc in querySnapshot.docs) {
-        final date = (doc['date'] as Timestamp).toDate();
-        final dateString = "${date.year}-${date.month}-${date.day}";
-        totalNumbers.update(
-            dateString, (value) => value + (doc['number'] as int? ?? 0),
-            ifAbsent: () => 0);
+      // Check if the document with the specified drill name exists
+      if (querySnapshot.exists) {
+        final drillData = querySnapshot.data();
+        print(drillData);
+
+        // Check if the current year-month is present in the document data
+        if (drillData?.containsKey(currentYearMonth) ?? false) {
+          final drillDataList = drillData?[currentYearMonth] as List?;
+
+          // Check if drillDataList is a List
+          if (drillDataList is List) {
+            for (final Map<String, dynamic>? doc in drillDataList) {
+              print("entered loop");
+
+              final date = (doc?['date'] as Timestamp?)?.toDate();
+
+              // Check if date is within the last 7 days
+              if (date != null && date.isAfter(last7DaysStart)) {
+                final dateString = "${date.year}-${date.month}-${date.day}";
+                final dayOfWeek = _getWeekDay(date);
+
+                final existingEntry = last7DaysTotalNumbers.firstWhere(
+                  (entry) => entry['day'] == dayOfWeek,
+                  orElse: () => {'height': 0, 'day': dayOfWeek},
+                );
+
+                if (existingEntry.containsKey('height')) {
+                  existingEntry['height'] += (doc?['number'] as int? ?? 0);
+                } else {
+                  existingEntry['height'] = (doc?['number'] as int? ?? 0);
+                }
+
+                if (!last7DaysTotalNumbers.contains(existingEntry)) {
+                  last7DaysTotalNumbers.add(existingEntry);
+                }
+              }
+            }
+          }
+        }
       }
 
-      final List<int> last7DaysTotalNumbers = totalNumbers.values.toList();
+      // Ensure that there is an entry for each day in the last 7 days
+      final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      for (final weekday in weekdays) {
+        if (last7DaysTotalNumbers.every((entry) => entry['day'] != weekday)) {
+          last7DaysTotalNumbers.add({'height': 0, 'day': weekday});
+        }
+      }
+
+      // Sort the result by day of the week
+      last7DaysTotalNumbers.sort((a, b) =>
+          weekdays.indexOf(a['day'] as String) -
+          weekdays.indexOf(b['day'] as String));
+
+      print(last7DaysTotalNumbers);
       return last7DaysTotalNumbers;
     } catch (e) {
+      print("Error getting last 7 days total numbers: $e");
       throw Exception("Error getting last 7 days total numbers: $e");
     }
+  }
+
+  String _getWeekDay(DateTime date) {
+    final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return weekdays[date.weekday - 1];
   }
 
   Future<Map<String, dynamic>> getImprovementDetails(
