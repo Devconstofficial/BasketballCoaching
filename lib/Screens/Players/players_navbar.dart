@@ -15,9 +15,9 @@ class PlayerNavBar extends StatefulWidget {
 
 class _PlayerNavBarState extends State<PlayerNavBar> {
   List<Widget> screens = [
-    const DrillsScreen(),
+    const DrillsScreen(studentId: "STD1006345"),
     const ChatScreen(),
-    const DrillProgress(),
+    const DrillProgress(studentId: "STD1006345"),
     const StudentProfile(),
   ];
 

@@ -1,23 +1,32 @@
+// EmojiSlider widget
+
 import 'package:basketball_coaching/Components/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmojiSlider extends StatefulWidget {
-  const EmojiSlider({super.key});
+  final ValueChanged<double> onValueChanged;
+
+  const EmojiSlider({required this.onValueChanged, Key? key}) : super(key: key);
 
   @override
-  State<EmojiSlider> createState() => _EmojiSliderState();
+  _EmojiSliderState createState() => _EmojiSliderState();
 }
 
 class _EmojiSliderState extends State<EmojiSlider> {
+  double sliderValue = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MySlider(
-          onSliderChanged: (value) => {
-
+          onSliderChanged: (value) {
+            setState(() {
+              sliderValue = value;
+            });
+            widget.onValueChanged(value);
           },
         ),
         Padding(

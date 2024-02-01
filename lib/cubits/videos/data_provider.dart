@@ -53,4 +53,37 @@ class VideoDataProvider {
       throw Exception("Error uploading video: $e");
     }
   }
+
+  Future<List<VideoChallenge>> getOtherVideoChallenges(
+      String studentId, List<String> types) async {
+    try {
+      final querySnapshot =
+          await _firestore.collection('videos').doc(studentId).get();
+      List data = querySnapshot['videos'];
+
+      List<VideoChallenge> videosList = [];
+
+      for (String type in types) {
+        String? videoFile;
+
+        for (int i = 0; i < data.length; i++) {
+          if ((data[i]['type'] as String).toLowerCase() == type.toLowerCase()) {
+            videoFile = data[i]['file'];
+            break;
+          }
+        }
+
+        VideoChallenge videoChallenge = VideoChallenge(
+          video: videoFile,
+          type: type,
+        );
+
+        videosList.add(videoChallenge);
+      }
+      return videosList;
+    } catch (e) {
+      print("Error fetching videos: $e");
+      return [];
+    }
+  }
 }

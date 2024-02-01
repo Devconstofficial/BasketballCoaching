@@ -3,9 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ClockTimer extends StatefulWidget {
+  final int? initialMinutes;
+  final int? initialSeconds;
   final void Function(int minutes, int seconds) onTimeSelected;
 
-  const ClockTimer({Key? key, required this.onTimeSelected}) : super(key: key);
+  const ClockTimer({
+    Key? key,
+    this.initialMinutes,
+    this.initialSeconds,
+    required this.onTimeSelected,
+  }) : super(key: key);
 
   @override
   _ClockTimerState createState() => _ClockTimerState();
@@ -14,6 +21,23 @@ class ClockTimer extends StatefulWidget {
 class _ClockTimerState extends State<ClockTimer> {
   int selectedMinutes = 0;
   int selectedSeconds = 0;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialMinutes == null && widget.initialSeconds == null) {
+      setState(() {});
+    } else if (widget.initialMinutes == null && widget.initialSeconds != null) {
+      setState(() {
+        selectedSeconds = widget.initialSeconds!;
+      });
+    } else if (widget.initialMinutes != null) {
+      setState(() {
+        selectedMinutes = widget.initialMinutes!;
+        selectedSeconds =
+            widget.initialSeconds == null ? 0 : widget.initialSeconds!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +70,8 @@ class _ClockTimerState extends State<ClockTimer> {
     );
   }
 
-  Widget _buildTimeContainer(String label, int selectedValue, Function(dynamic) onChanged) {
+  Widget _buildTimeContainer(
+      String label, int selectedValue, Function(dynamic) onChanged) {
     return Container(
       width: 60.w,
       height: 80.h,

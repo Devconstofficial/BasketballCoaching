@@ -206,7 +206,7 @@ class _AddProgressState extends State<AddProgress> {
                   bottom: 10,
                 ),
                 child: !hasVideo
-                    ? const NoMediaPicked()
+                    ? const _NoMediaPicked()
                     : GestureDetector(
                         onTap: () {
                           CustomNavigate()
@@ -235,7 +235,7 @@ class _AddProgressState extends State<AddProgress> {
                                       ),
                                     );
                                   }
-                                  return const NoMediaPicked();
+                                  return const _NoMediaPicked();
                                 },
                               ),
                               Positioned.fill(
@@ -394,8 +394,8 @@ class _AddProgressState extends State<AddProgress> {
   }
 }
 
-class NoMediaPicked extends StatelessWidget {
-  const NoMediaPicked({
+class _NoMediaPicked extends StatelessWidget {
+  const _NoMediaPicked({
     super.key,
   });
 

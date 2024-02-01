@@ -19,4 +19,13 @@ class VideoRepository {
       throw Exception("Error uploading video: $e");
     }
   }
+
+  Future<List<VideoChallenge>> getOtherVideoChallenges(
+      String studentId, List<String> types) async {
+    try {
+      return await dataProvider.getOtherVideoChallenges(studentId, types);
+    } catch (e) {
+      throw Exception("Error fetching challenges$e");
+    }
+  }
 }

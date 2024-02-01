@@ -32,6 +32,29 @@ Future<List<String>> getAllDrillsNames(String documentId) async {
   }
 }
 
+Future<List<String>> getOtherDrillsNames(String documentId) async {
+  List<String> drillNames = [];
+
+  try {
+    CollectionReference mainCollectionRef =
+        FirebaseFirestore.instance.collection('students');
+    QuerySnapshot subCollectionSnapshot =
+        await mainCollectionRef.doc(documentId).collection('performance').get();
+
+    subCollectionSnapshot.docs.forEach((DocumentSnapshot document) {
+      if (document.id != 'pull up' &&
+          document.id != 'bank shot' &&
+          document.id != 'cone') {
+        drillNames.add(document.id);
+      }
+    });
+    print(drillNames);
+    return drillNames;
+  } catch (e) {
+    return [];
+  }
+}
+
 Future<String> uploadVideo(File videoFile, String fileName) async {
   try {
     final storage = storageRef.child('videos/$fileName');

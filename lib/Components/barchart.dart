@@ -55,7 +55,11 @@ class _BarChartState extends State<BarChart> {
           height: 4.h,
         ),
         Text(
-          height >= prevHeight ? 'improve' : 'decline',
+          height == 0
+              ? 'decline'
+              : height >= prevHeight
+                  ? 'improve'
+                  : 'decline',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: const Color(0xFF89898A),

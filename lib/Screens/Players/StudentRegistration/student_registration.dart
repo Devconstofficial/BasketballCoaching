@@ -14,6 +14,7 @@ class StudentRegistration extends StatefulWidget {
 }
 
 class _StudentRegistrationState extends State<StudentRegistration> {
+  String studentId = "STD1006345";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +103,9 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const DrillsScreen()),
+                        builder: (context) => DrillsScreen(
+                              studentId: studentId,
+                            )),
                   );
                 },
                 child: const MainButton(text: 'Get Started')),

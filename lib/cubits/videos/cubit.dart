@@ -1,8 +1,8 @@
 // video_cubit.dart
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/video_record.dart';
 
 part './data_provider.dart';
@@ -30,6 +30,17 @@ class VideoCubit extends Cubit<VideoState> {
       getAllVideos(studentId, videoRecord.type!);
     } catch (e) {
       emit(VideoFetchFailed(message: e.toString()));
+    }
+  }
+
+  Future<void> getOtherVideoChallenges(
+      String studentId, List<String> types) async {
+    emit(const ChallengeFetchLoading());
+    try {
+      final data = await repository.getOtherVideoChallenges(studentId, types);
+      emit(ChallengeFetchSuccess(data: data));
+    } catch (e) {
+      emit(ChallengeFetchFailed(message: e.toString()));
     }
   }
 }

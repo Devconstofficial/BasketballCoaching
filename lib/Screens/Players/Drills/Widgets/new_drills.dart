@@ -1,12 +1,24 @@
 import 'package:basketball_coaching/Screens/Players/DrillPerformance/drill_performance.dart';
+import 'package:basketball_coaching/Screens/Players/DrillProgress/drill_progress.dart';
+import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class NewDrills extends StatefulWidget {
+  final String drillName;
+  final String studentId;
   final String text;
-  final String gifPath;
-  const NewDrills({super.key, required this.text, required this.gifPath});
+  final String? gifPath;
+  final String? videoUrl;
+  const NewDrills({
+    super.key,
+    required this.drillName,
+    required this.studentId,
+    required this.text,
+    this.gifPath,
+    this.videoUrl,
+  });
 
   @override
   State<NewDrills> createState() => _NewDrillsState();
@@ -30,7 +42,7 @@ class _NewDrillsState extends State<NewDrills> {
             ),
           ),
           child: Image.asset(
-            widget.gifPath,
+            widget.gifPath!,
             fit: BoxFit.cover,
           ),
         ),
@@ -80,14 +92,25 @@ class _NewDrillsState extends State<NewDrills> {
                     SizedBox(
                       width: 7.w,
                     ),
-                    Text(
-                      'Progress Details',
-                      style: TextStyle(
-                        color: const Color(0xFFAB7CE6),
-                        fontSize: 14.sp,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
+                    GestureDetector(
+                      onTap: () {
+                        CustomNavigate().pushRoute(
+                          context,
+                          DrillProgress(
+                            studentId: widget.studentId,
+                            drillName: widget.drillName,
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Progress Details',
+                        style: TextStyle(
+                          color: const Color(0xFFAB7CE6),
+                          fontSize: 14.sp,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 0,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -95,11 +118,15 @@ class _NewDrillsState extends State<NewDrills> {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const DrillPerformance()),
-                        );
+                        CustomNavigate().pushRoute(
+                            context,
+                            DrillPerformance(
+                              drillName: widget.drillName,
+                              video: widget.videoUrl != null ||
+                                      widget.videoUrl == ""
+                                  ? widget.videoUrl
+                                  : null,
+                            ));
                       },
                       child: Row(
                         children: [

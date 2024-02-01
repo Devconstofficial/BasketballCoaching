@@ -64,7 +64,7 @@ class PerformanceDataProvider {
 
       final drillDocSnapshot = await drillRef.get();
       if (!drillDocSnapshot.exists) {
-        await drillRef.set({});
+        await drillRef.set({yearMonthKey: []});
       }
 
       await drillRef.set(
@@ -214,7 +214,6 @@ class PerformanceDataProvider {
           .collection('performance')
           .doc(drillName)
           .get();
-      print("got path");
 
       final List<Map<String, dynamic>> last7DaysTotalNumbers = [];
 
@@ -235,7 +234,9 @@ class PerformanceDataProvider {
               final date = (doc?['date'] as Timestamp?)?.toDate();
 
               // Check if date is within the last 7 days
-              if (date != null && date.isAfter(last7DaysStart)) {
+              if (date != null &&
+                  date.isAfter(last7DaysStart.subtract(Duration(days: 1))) &&
+                  date.isBefore(now.add(Duration(days: 1)))) {
                 final dateString = "${date.year}-${date.month}-${date.day}";
                 final dayOfWeek = _getWeekDay(date);
 
@@ -339,6 +340,4 @@ class PerformanceDataProvider {
       throw Exception("Error getting improvement details: $e");
     }
   }
-
-  // Other data provider methods...
 }
