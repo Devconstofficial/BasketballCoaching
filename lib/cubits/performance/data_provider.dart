@@ -44,14 +44,18 @@ class PerformanceDataProvider {
         );
         videoCubit.uploadVideo(videoRecord, studentId);
       }
+      int totalScores = 0;
 
+      for (int score in scores) {
+        totalScores += score;
+      }
       record = PerformanceRecord(
         date: DateTime.now(),
         leaderboard: leaderboard,
         minutes: selectedMinutes,
         seconds: selectedSeconds,
         number: number,
-        totalScore: 0,
+        totalScore: totalScores,
         video: videoUrl,
         scores: scores,
       );

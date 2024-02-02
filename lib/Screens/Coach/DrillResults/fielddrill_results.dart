@@ -59,7 +59,7 @@ class _FieldDrillState extends State<FieldDrill> {
       backgroundColor: const Color(0xFFF5F5F5),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(left: 23.w, right: 23.w, top: 60.h),
+          padding: EdgeInsets.only(top: 30.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -79,11 +79,9 @@ class _FieldDrillState extends State<FieldDrill> {
                           return Stack(
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
                                 child: Image.memory(
                                   snapshot.data!,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
+                                  width: MediaQuery.of(context).size.width * 1,
                                   height: 250,
                                   fit: BoxFit.cover,
                                 ),
@@ -125,7 +123,7 @@ class _FieldDrillState extends State<FieldDrill> {
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 26.sp,
-                    fontFamily: 'Inter',
+                    fontFamily: 'Jua',
                     fontWeight: FontWeight.w500,
                     height: 0,
                   ),
@@ -147,19 +145,34 @@ class _FieldDrillState extends State<FieldDrill> {
                         ),
                       ),
                     )
-                  : Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 450,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: FirebaseNetworkImage(
-                        imagePath: widget.leaderboard!,
-                        width: 58,
-                        height: 58,
+                  : Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        height: 600,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(211, 107, 56, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 600,
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(211, 107, 56, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: FirebaseNetworkImage(
+                              imagePath: widget.leaderboard!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
+              SizedBox(
+                height: 30.w,
+              )
             ],
           ),
         ),

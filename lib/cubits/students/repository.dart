@@ -21,6 +21,14 @@ class StudentRepository {
     }
   }
 
+  Future<void> removeStudentFromCoach(String studentId) async {
+    try {
+      await dataProvider.removeStudentFromCoach(studentId);
+    } catch (e) {
+      throw Exception("Error deleting student: $e");
+    }
+  }
+
   Future<void> updateProfile(String studentId, String newProfile) async {
     try {
       await dataProvider.updateProfile(studentId, newProfile);

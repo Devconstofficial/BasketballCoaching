@@ -32,6 +32,7 @@ class StudentCubit extends Cubit<StudentState> {
   Future<void> deleteStudent(String studentId) async {
     try {
       await repository.deleteStudent(studentId);
+      await repository.removeStudentFromCoach(studentId);
       getAllStudents();
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
@@ -56,13 +57,15 @@ class StudentCubit extends Cubit<StudentState> {
     }
   }
 
-  Future<void> createNewStudent(String name, String coachId) async {
+  Future<Student> createNewStudent(String name, String coachId) async {
     try {
       final newStudent = await repository.createNewStudent(name, coachId);
       getAllStudents();
       emit(StudentCreationSuccess(newStudent: newStudent));
+      return newStudent;
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
+      throw Exception(e);
     }
   }
 }

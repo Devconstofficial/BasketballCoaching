@@ -4,6 +4,9 @@ import 'package:basketball_coaching/Screens/Coach/Home/Widgets/card_button.dart'
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../cubits/students/cubit.dart';
 
 class StudentsCard extends StatelessWidget {
   final String name;
@@ -57,7 +60,12 @@ class StudentsCard extends StatelessWidget {
                 const SizedBox(
                   width: 30,
                 ),
-                const Icon(Icons.delete),
+                GestureDetector(
+                  onTap: () {
+                    _showDeleteConfirmationDialog(context);
+                  },
+                  child: const Icon(Icons.delete),
+                ),
               ],
             ),
           ),
@@ -114,5 +122,37 @@ class StudentsCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text("Delete Student"),
+          content: const Text("Are you sure you want to delete this student?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _onDeletePressed(context);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onDeletePressed(BuildContext context) {
+    final studentCubit = BlocProvider.of<StudentCubit>(context);
+    studentCubit.deleteStudent(studentId);
   }
 }

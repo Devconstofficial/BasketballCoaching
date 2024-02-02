@@ -30,7 +30,8 @@ class StudentFetchSuccess extends StudentState {
 class StudentCreationSuccess extends StudentState {
   final Student newStudent;
 
-  const StudentCreationSuccess({required this.newStudent}) : super(newStudent: newStudent);
+  const StudentCreationSuccess({required this.newStudent})
+      : super(newStudent: newStudent);
 
   @override
   List<Object?> get props => [newStudent];

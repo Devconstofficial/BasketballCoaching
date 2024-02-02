@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -63,4 +64,17 @@ Future<String> uploadVideo(File videoFile, String fileName) async {
   } catch (e) {
     throw Exception("Error uploading video: $e");
   }
+}
+
+//uploading screenshot of score board
+Future<String> uploadImageToFirebaseStorage(
+    Uint8List imageBytes, String studentName) async {
+  String fileName =
+      'scoreboard_${studentName}_${DateTime.now().millisecondsSinceEpoch}.png';
+  String storagePath = 'leaderboards/$fileName';
+  final Reference storageRef =
+      FirebaseStorage.instance.ref().child(storagePath);
+  await storageRef.putData(imageBytes);
+  String downloadURL = storagePath;
+  return downloadURL;
 }

@@ -37,6 +37,26 @@ class StudentDataProvider {
     }
   }
 
+  Future<void> removeStudentFromCoach(String studentId) async {
+    try {
+      final coachesQuerySnapshot =
+          await FirebaseFirestore.instance.collection('coaches').get();
+
+      for (final coachDoc in coachesQuerySnapshot.docs) {
+        final coachId = coachDoc.id;
+        await FirebaseFirestore.instance
+            .collection('coaches')
+            .doc(coachId)
+            .update({
+          'students': FieldValue.arrayRemove(
+              [FirebaseFirestore.instance.doc('students/$studentId')])
+        });
+      }
+    } catch (e) {
+      print("Error removing student from coach: $e");
+    }
+  }
+
   Future<void> updateProfile(String studentId, String newProfile) async {
     try {
       await _firestore
@@ -73,15 +93,42 @@ class StudentDataProvider {
   Future<Student> createNewStudent(String name, String coachId) async {
     try {
       final String studentId = generateStudentRandomId();
-      Student newStudent =
-          Student(studentId: studentId, name: name, totalScore: 0, profile: "");
+      Student newStudent = Student(
+          studentId: studentId,
+          name: name,
+          totalScore: 0,
+          profile: "avatars/avatar2.png");
       final CollectionReference studentsCollection =
           FirebaseFirestore.instance.collection('students');
       await _firestore
           .collection('students')
           .doc(studentId)
           .set(newStudent.toMap());
-      await studentsCollection.doc(studentId).collection('performance').add({});
+      await studentsCollection
+          .doc(studentId)
+          .collection('performance')
+          .doc("cone")
+          .set({});
+      await studentsCollection
+          .doc(studentId)
+          .collection('performance')
+          .doc("pull up")
+          .set({});
+      await studentsCollection
+          .doc(studentId)
+          .collection('performance')
+          .doc("bank shot")
+          .set({});
+      await studentsCollection
+          .doc(studentId)
+          .collection('performance')
+          .doc("close shot")
+          .set({});
+      await studentsCollection
+          .doc(studentId)
+          .collection('performance')
+          .doc("3-drill")
+          .set({});
       addStudentToCoach(coachId, studentId);
       return newStudent;
     } catch (e) {

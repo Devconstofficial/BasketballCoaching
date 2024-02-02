@@ -8,6 +8,7 @@ import 'package:basketball_coaching/Components/my_snackbar.dart';
 import 'package:basketball_coaching/Components/slider.dart';
 import 'package:basketball_coaching/Components/video_player_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/AddProgress/Widgets/student_detail.dart';
+import 'package:basketball_coaching/Screens/Coach/AddProgress/leaderboard.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
 import 'package:basketball_coaching/Screens/Coach/coach_navbar.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
@@ -42,9 +43,9 @@ class _AddProgressState extends State<AddProgress> {
   int selectedMinutes = 0;
   int selectedSeconds = 0;
   int drillNumbers = 0;
-  String leaderboard = "";
   List<int> scores = [];
   bool hasVideo = false;
+  Uint8List? scoreBoard;
 
   final ImagePicker picker = ImagePicker();
   File? file;
@@ -100,6 +101,9 @@ class _AddProgressState extends State<AddProgress> {
   Future<void> addPerformance(BuildContext context) async {
     String filePath = file?.path ?? "";
     try {
+      String leaderboard = scoreBoard != null
+          ? await uploadImageToFirebaseStorage(scoreBoard!, widget.name)
+          : "";
       _performanceCubit.addPerformanceRecord(
         widget.studentId,
         file ?? File(""),
@@ -109,7 +113,7 @@ class _AddProgressState extends State<AddProgress> {
         selectedDrill!,
         leaderboard,
         drillNumbers,
-        scores,
+        scores.isNotEmpty ? scores : [],
       );
       SnackBarHelper.showSnackbar(context, "Record added Successfully");
     } catch (e) {
@@ -344,26 +348,49 @@ class _AddProgressState extends State<AddProgress> {
               SizedBox(
                 height: 25.h,
               ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/add.svg',
-                  ),
-                  SizedBox(
-                    width: 27.w,
-                  ),
-                  Text(
-                    'Add score board',
-                    style: TextStyle(
-                      color: const Color(0xFF979595),
-                      fontSize: 12.sp,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
+              scoreBoard == Uint8List(0) || scoreBoard == null
+                  ? GestureDetector(
+                      onTap: () {
+                        CustomNavigate().pushRoute(
+                          context,
+                          LeaderboardScreen(
+                            onScreenshotTaken: (captureImage, scoreList) {
+                              setState(() {
+                                scoreBoard =
+                                    scoreList != [] ? captureImage : null;
+                                scores = scoreList != [] ? scoreList! : [];
+                              });
+                            },
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/add.svg',
+                          ),
+                          SizedBox(
+                            width: 27.w,
+                          ),
+                          Text(
+                            'Add score board',
+                            style: TextStyle(
+                              color: const Color(0xFF979595),
+                              fontSize: 12.sp,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                              height: 0,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : Center(
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: 600,
+                          child: Image.memory(scoreBoard!)),
                     ),
-                  )
-                ],
-              ),
               SizedBox(
                 height: 27.h,
               ),
@@ -377,6 +404,7 @@ class _AddProgressState extends State<AddProgress> {
                           "Drill, Time and No. of times performed is required");
                     } else {
                       addPerformance(context);
+                      SnackBarHelper.showSnackbar(context, "Uploading Records");
                       CustomNavigate().pushRoute(
                           context,
                           ViewProgress(
