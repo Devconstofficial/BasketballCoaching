@@ -1,28 +1,48 @@
 import 'package:basketball_coaching/Screens/Players/DrillProgress/drill_progress.dart';
 import 'package:basketball_coaching/Screens/Players/Drills/drills_screen.dart';
 import 'package:basketball_coaching/Screens/Players/StudentProfiles/student_profile.dart';
-import 'package:basketball_coaching/Screens/chat_screen.dart';
+import 'package:basketball_coaching/Screens/Chat/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayerNavBar extends StatefulWidget {
   static const String id = 'MyNavBar';
-  const PlayerNavBar({Key? key});
+  final String userId;
+  const PlayerNavBar({
+    Key? key,
+    required this.userId,
+  });
 
   @override
   State<PlayerNavBar> createState() => _PlayerNavBarState();
 }
 
 class _PlayerNavBarState extends State<PlayerNavBar> {
-  List<Widget> screens = [
-    const DrillsScreen(studentId: "STD1006345"),
-    const ChatScreen(),
-    const DrillProgress(studentId: "STD1006345"),
-    const StudentProfile(),
-  ];
+  String? user;
+  List<Widget> screens = [];
 
   int currentindex = 0;
   List<bool> isSelected = [true, false, false, false];
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+    screens = [
+      DrillsScreen(studentId: widget.userId),
+      const ChatScreen(),
+      DrillProgress(studentId: widget.userId),
+      const StudentProfile(),
+    ];
+  }
+
+  Future<void> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+    setState(() {
+      user = userId;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

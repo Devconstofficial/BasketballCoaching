@@ -29,6 +29,17 @@ class StudentCubit extends Cubit<StudentState> {
     }
   }
 
+  Future<Student?> getStudentById(String studentId) async {
+    emit(const StudentFetchLoading());
+    try {
+      final data = await repository.getStudentById(studentId);
+      return data;
+    } catch (e) {
+      emit(StudentFetchFailed(message: e.toString()));
+      return null;
+    }
+  }
+
   Future<void> deleteStudent(String studentId) async {
     try {
       await repository.deleteStudent(studentId);

@@ -50,6 +50,7 @@ class PerformanceCubit extends Cubit<PerformanceState> {
           leaderboard,
           number,
           scores);
+      await (fetchPerformanceRecords(studentId, selectedDrill));
     } catch (e) {
       emit(PerformanceAddRecordFailed(message: e.toString()));
     }

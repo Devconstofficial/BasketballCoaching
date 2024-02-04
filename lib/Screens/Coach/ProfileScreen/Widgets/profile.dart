@@ -1,15 +1,45 @@
+import 'dart:math';
+
 import 'package:basketball_coaching/Screens/login.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-class Profile extends StatelessWidget {
+import '../../../../providers/auth_provider.dart';
+
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
   @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  bool logOut = false;
+  @override
   Widget build(BuildContext context) {
+    final UserAuthProvider authProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
+
+    Future<void> signOut() async {
+      try {
+        await FirebaseAuth.instance.signOut();
+        authProvider.clearUser();
+        setState(() {
+          logOut = true;
+        });
+        CustomNavigate().pushReplacement(
+          context,
+          const LoginScreen(),
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return Stack(children: [
       Container(
           height: 560.h,
@@ -181,12 +211,8 @@ class Profile extends StatelessWidget {
                             height: 27.h,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              FirebaseAuth.instance.signOut();
-                              CustomNavigate().pushReplacement(
-                                context,
-                                const LoginScreen(),
-                              );
+                            onTap: () async {
+                              await signOut();
                             },
                             child: Row(
                               children: [

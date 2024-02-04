@@ -1,6 +1,6 @@
 import 'package:basketball_coaching/Screens/Coach/AddProgress/add_progress.dart';
 import 'package:basketball_coaching/Screens/Coach/Home/Widgets/card_button.dart';
-import 'package:basketball_coaching/Screens/chat_screen.dart';
+import 'package:basketball_coaching/Screens/Chat/chat_screen.dart';
 import 'package:basketball_coaching/Screens/Players/StudentRegistration/student_registration.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';

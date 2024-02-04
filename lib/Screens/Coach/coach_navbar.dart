@@ -1,6 +1,6 @@
 import 'package:basketball_coaching/Screens/Coach/Home/home_screen.dart';
 import 'package:basketball_coaching/Screens/Coach/ProfileScreen/profile_screen.dart';
-import 'package:basketball_coaching/Screens/chat_screen.dart';
+import 'package:basketball_coaching/Screens/Chat/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

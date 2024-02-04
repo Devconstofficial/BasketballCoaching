@@ -13,6 +13,14 @@ class StudentRepository {
     }
   }
 
+  Future<Student?> getStudentById(String studentId) async {
+    try {
+      return await dataProvider.getStudentById(studentId);
+    } catch (e) {
+      throw Exception("Error fetching Student: $e");
+    }
+  }
+
   Future<void> deleteStudent(String studentId) async {
     try {
       await dataProvider.deleteStudent(studentId);

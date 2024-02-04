@@ -29,6 +29,23 @@ class StudentDataProvider {
     }
   }
 
+  Future<Student?> getStudentById(String studentId) async {
+    try {
+      final DocumentSnapshot document =
+          await _firestore.collection('students').doc(studentId).get();
+
+      if (document.exists) {
+        return Student.fromMap(
+            studentId, document.data() as Map<String, dynamic>);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching student: $e");
+      return null;
+    }
+  }
+
   Future<void> deleteStudent(String studentId) async {
     try {
       await _firestore.collection('students').doc(studentId).delete();
