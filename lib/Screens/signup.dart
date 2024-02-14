@@ -3,6 +3,7 @@ import 'package:basketball_coaching/Screens/login.dart';
 import 'package:basketball_coaching/Components/main_button.dart';
 import 'package:basketball_coaching/Components/my_textfield.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
+import 'package:basketball_coaching/firebase/coach_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,6 +31,8 @@ class _SignupScreenState extends State<SignupScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+      CoachAuth().addCoachDocument(_emailController.text,
+          _fullNameController.text, _teamNameController.text);
       setState(() {
         success = true;
       });
@@ -196,7 +199,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       InkWell(
                         onTap: () {
                           CustomNavigate()
-                              .pushRoute(context, const LoginScreen());
+                              .pushReplacement(context, const LoginScreen());
                         },
                         child: Text(
                           'Sign in',

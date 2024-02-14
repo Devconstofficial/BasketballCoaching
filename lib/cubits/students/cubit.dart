@@ -2,10 +2,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:basketball_coaching/firebase/coach_methods.dart';
+import 'package:basketball_coaching/models/coach.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/student.dart';
 

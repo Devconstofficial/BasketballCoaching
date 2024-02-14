@@ -11,18 +11,46 @@ class StudentDataProvider {
     return '$prefix$randomDigits';
   }
 
+  // Future<List<Student>> getAllStudents() async {
+  //   try {
+  //     final querySnapshot = await _firestore.collection('students').get();
+  //     List data = querySnapshot.docs;
+  //     List<Student> students = List.generate(
+  //       data.length,
+  //       (index) => Student.fromMap(
+  //         data[index].id,
+  //         data[index].data(),
+  //       ),
+  //     );
+  //     return students;
+  //   } catch (e) {
+  //     print("Error fetching students: $e");
+  //     return [];
+  //   }
+  // }
   Future<List<Student>> getAllStudents() async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('user_id');
+      print("coach id \n\n\n $userId");
+      Coach? coach = await CoachAuth().getCoachDataByCoachId(userId!);
+      print("COACH \n\n ${coach!.coachId}");
+
       final querySnapshot = await _firestore.collection('students').get();
       List data = querySnapshot.docs;
-      List<Student> students = List.generate(
-        data.length,
-        (index) => Student.fromMap(
-          data[index].id,
-          data[index].data(),
-        ),
-      );
-      return students;
+      print("STUDENTS \n\n\n ${data}");
+      if (coach.students != [] || coach.students.isNotEmpty) {
+        List<String> coachStudents = coach.students;
+        print("COACH STUDENTS\n\n $coachStudents");
+        List<Student> students = data
+            .map((doc) => Student.fromMap(doc.id, doc.data()))
+            .where((student) => coachStudents.contains(student.studentId))
+            .toList();
+        print("COACH Students\n\n\n $students");
+
+        return students;
+      }
+      return [];
     } catch (e) {
       print("Error fetching students: $e");
       return [];
@@ -146,22 +174,49 @@ class StudentDataProvider {
           .collection('performance')
           .doc("3-drill")
           .set({});
-      addStudentToCoach(coachId, studentId);
+      await updateCoachStudents(coachId, studentId);
       return newStudent;
     } catch (e) {
       throw Exception("Error creating new student: $e");
     }
   }
 
-  Future<void> addStudentToCoach(String coachId, String studentId) async {
-    final DocumentReference coachDocRef =
-        FirebaseFirestore.instance.collection('coaches').doc(coachId);
+  // Future<void> addStudentToCoach(String coachId, String studentId) async {
+  //   final DocumentReference coachDocRef =
+  //       FirebaseFirestore.instance.collection('coaches').doc(coachId);
 
-    await coachDocRef.update({
-      'students': FieldValue.arrayUnion(
-          [FirebaseFirestore.instance.doc('students/$studentId')]),
-    });
+  //   await coachDocRef.update({
+  //     'students': FieldValue.arrayUnion(
+  //         [FirebaseFirestore.instance.doc('students/$studentId')]),
+  //   });
 
-    print('Student added to coach\'s document');
+  //   print('Student added to coach\'s document');
+  // }
+  Future<void> updateCoachStudents(String coachId, String studentId) async {
+    try {
+      final coachDocRef =
+          FirebaseFirestore.instance.collection('coaches').doc(coachId);
+      final coachDoc = await coachDocRef.get();
+      print("COACH FIREBASE DATA \n ${coachDoc.data()}");
+
+      if (coachDoc.exists) {
+        List<String> existingStudents =
+            List<String>.from(coachDoc.data()?['students'] ?? []);
+        if (!existingStudents.contains(studentId)) {
+          existingStudents.add(studentId);
+
+          await coachDocRef.update({
+            'students': existingStudents,
+          });
+          print('Coach students updated successfully');
+        } else {
+          print('Student already exists in the coach\'s list');
+        }
+      } else {
+        print('Coach not found');
+      }
+    } catch (e) {
+      print('Error updating coach students: $e');
+    }
   }
 }

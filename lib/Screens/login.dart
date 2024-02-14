@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         InkWell(
                           onTap: () {
                             CustomNavigate()
-                                .pushRoute(context, const SignupScreen());
+                                .pushReplacement(context, const SignupScreen());
                           },
                           child: Text(
                             'Sign up',

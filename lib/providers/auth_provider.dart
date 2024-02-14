@@ -36,7 +36,8 @@ class UserAuthProvider extends ChangeNotifier {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(_userIdKey, userId);
-    prefs.setString(_userTypeKey, userType.toString());
+    prefs.setString(
+        _userTypeKey, userType == UserType.coach ? 'coach' : 'student');
     prefs.setString(_userNameKey, userName);
 
     notifyListeners();

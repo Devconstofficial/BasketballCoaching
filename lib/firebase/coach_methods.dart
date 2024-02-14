@@ -72,7 +72,7 @@ class CoachAuth {
               .collection('coaches')
               .doc(coachId)
               .get();
-      print("HERE \n\n IS \n\n THE COACH \n\n ${coachDocument}");
+      print("HERE \n\n IS \n\n THE COACH \n\n ${coachDocument.data()}");
       if (coachDocument.exists) {
         return Coach.fromMap(coachId, coachDocument.data()!);
       } else {
@@ -81,6 +81,34 @@ class CoachAuth {
     } catch (e) {
       print('Error getting coach data by coachId: $e');
       return null;
+    }
+  }
+
+  Future<void> updateCoachStudents(String coachId, String studentId) async {
+    try {
+      final coachDocRef =
+          FirebaseFirestore.instance.collection('coaches').doc(coachId);
+      final coachDoc = await coachDocRef.get();
+      print("COACH DOC \n\n $coachDoc");
+
+      if (coachDoc.exists) {
+        List<String> existingStudents =
+            List<String>.from(coachDoc.data()?['students'] ?? []);
+        if (!existingStudents.contains(studentId)) {
+          existingStudents.add(studentId);
+
+          await coachDocRef.update({
+            'students': existingStudents,
+          });
+          print('Coach students updated successfully');
+        } else {
+          print('Student already exists in the coach\'s list');
+        }
+      } else {
+        print('Coach not found');
+      }
+    } catch (e) {
+      print('Error updating coach students: $e');
     }
   }
 }

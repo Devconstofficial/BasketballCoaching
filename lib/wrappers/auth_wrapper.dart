@@ -19,6 +19,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   late LocalUser? localUser;
 
   Future<LocalUser?> getLocalUser() async {
+    final UserAuthProvider authProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('user_id');
     String? username = prefs.getString('user_name');
@@ -38,20 +40,23 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
 
   Future<void> getUser() async {
     localUser = await getLocalUser();
-    setState(() {}); // Trigger a rebuild after getting the local user
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final UserAuthProvider authProvider =
         Provider.of<UserAuthProvider>(context, listen: false);
-
+    print(
+        "USER AUTH \n\n ${authProvider.userId} \n\n ${authProvider.userName} \n\n ${authProvider.userType.toString()}");
     return FutureBuilder<LocalUser?>(
       future: getLocalUser(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           localUser = snapshot.data;
           if (localUser != null) {
+            print(
+                "USER AUTH \n\n ${authProvider.userId} \n\n ${authProvider.userName} \n\n ${authProvider.userType.toString()}");
             String id = (localUser!.type == 'coach') ? 'coach' : 'student';
             if (id == 'coach') {
               return const CoachNavBar();
@@ -74,7 +79,6 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
                 return const CoachNavBar();
               }
             }
-            print("CIRCLAR \n\n INDICATOR EXECUTED");
             return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),

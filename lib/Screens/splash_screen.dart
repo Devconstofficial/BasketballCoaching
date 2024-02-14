@@ -5,6 +5,9 @@ import 'package:basketball_coaching/Screens/login.dart';
 import 'package:basketball_coaching/wrappers/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,6 +36,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UserAuthProvider authProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
+    print(
+        "USER AUTH \n\n ${authProvider.userId} \n\n ${authProvider.userName} \n\n ${authProvider.userType.toString()}");
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

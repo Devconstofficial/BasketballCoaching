@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Components/dialog_box.dart';
 import '../../../cubits/students/cubit.dart';
 import '../../../models/student.dart';
@@ -11,12 +12,34 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => StudentCubit()..getAllStudents(),
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'My Team',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 32,
+              fontFamily: 'Jua',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFFF5F5F5),
         body: BlocBuilder<StudentCubit, StudentState>(
           builder: (context, state) {
             if (state is StudentFetchLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/loader.gif",
+                    height: 200,
+                    width: 200,
+                  ),
+                ),
               );
             } else if (state is StudentFetchSuccess) {
               final List<Student> studentsData = state.data!.toList();
@@ -37,73 +60,66 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildStudentGrid(BuildContext context, List<Student> students) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 19, right: 19, top: 55),
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 30),
-            child: Text(
-              'My Team',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 32,
-                fontFamily: 'Jua',
-                fontWeight: FontWeight.w400,
-                height: 0,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  final studentCubit = BlocProvider.of<StudentCubit>(context);
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 19, right: 19, top: 15),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    final studentCubit = BlocProvider.of<StudentCubit>(context);
 
-                  TextEditingController nameController =
-                      TextEditingController();
-                  String? studentName = await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Enter Student Name"),
-                      content: TextField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                          hintText: "Enter name",
+                    TextEditingController nameController =
+                        TextEditingController();
+                    String? studentName = await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Enter Student Name"),
+                        content: TextField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            hintText: "Enter name",
+                          ),
                         ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(nameController.text);
+                            },
+                            child: Text("OK"),
+                          ),
+                        ],
                       ),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(nameController.text);
-                          },
-                          child: Text("OK"),
-                        ),
-                      ],
-                    ),
-                  );
-
-                  if (studentName != null) {
-                    final student = await studentCubit.createNewStudent(
-                      studentName,
-                      "C111222",
                     );
-                    final String studentId = student.studentId;
-                    showCustomDialog(context, 'Student ID: $studentId');
-                    studentCubit.getAllStudents();
-                  }
-                },
-                child: const Icon(
-                  Icons.add,
-                  color: Color(0xFFAB7CE6),
+
+                    if (studentName != null) {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? userId = prefs.getString('user_id');
+                      final student = await studentCubit.createNewStudent(
+                        studentName,
+                        userId!,
+                      );
+                      final String studentId = student.studentId;
+                      showCustomDialog(context, 'Student ID: $studentId');
+                      studentCubit.getAllStudents();
+                    }
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    color: Color(0xFFAB7CE6),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SingleChildScrollView(
-            child: GridView.builder(
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GridView.builder(
+              physics: ScrollPhysics(),
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -120,11 +136,11 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          )
-        ],
+            const SizedBox(
+              height: 30,
+            )
+          ],
+        ),
       ),
     );
   }
