@@ -35,8 +35,9 @@ class _DrillsScreenState extends State<DrillsScreen> {
 
   Future<void> getChallenges() async {
     VideoCubit videoChallengeCubit = BlocProvider.of<VideoCubit>(context);
-    await videoChallengeCubit.getOtherVideoChallenges(
-        widget.studentId, challenges);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+    await videoChallengeCubit.getOtherVideoChallenges(userId!, challenges);
   }
 
   Future<void> challengesNames() async {

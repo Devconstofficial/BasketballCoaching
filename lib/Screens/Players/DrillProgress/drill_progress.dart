@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../app_navigations/custom_navigate.dart';
@@ -72,7 +73,9 @@ class _DrillProgressState extends State<DrillProgress> {
 
   Future<void> fetchAllVideos() async {
     VideoCubit videoCubit = BlocProvider.of<VideoCubit>(context);
-    await videoCubit.getAllVideos(widget.studentId, widget.drillName!);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+    await videoCubit.getAllVideos(userId!, widget.drillName!);
   }
 
   Future<void> daysPerformanceResult() async {

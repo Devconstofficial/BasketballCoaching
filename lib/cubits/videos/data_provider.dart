@@ -8,19 +8,24 @@ class VideoDataProvider {
     try {
       final querySnapshot =
           await _firestore.collection('videos').doc(studentId).get();
-      List data = querySnapshot['videos'];
-      List<VideoRecord> videos = List.generate(data.length, (index) {
-        DateTime dateTime = (data[index]['date'] as Timestamp).toDate();
+      if (querySnapshot.exists) {
+        print("DATA DATA DATA \n\n\n\n ${querySnapshot.data()}");
+        List data = querySnapshot['videos'];
+        List<VideoRecord> videos = List.generate(data.length, (index) {
+          DateTime dateTime = (data[index]['date'] as Timestamp).toDate();
 
-        String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
-        return VideoRecord.fromMap(
-          data[index]..['dateTime'] = date,
-        );
-      });
+          String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+          return VideoRecord.fromMap(
+            data[index]..['dateTime'] = date,
+          );
+        });
 
-      videos =
-          videos.where((video) => video.type == type.toLowerCase()).toList();
-      return videos;
+        videos =
+            videos.where((video) => video.type == type.toLowerCase()).toList();
+        return videos;
+      } else {
+        return [];
+      }
     } catch (e) {
       print("Error fetching videos: $e");
       return [];

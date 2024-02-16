@@ -38,7 +38,7 @@ class VideoCubit extends Cubit<VideoState> {
     emit(const ChallengeFetchLoading());
     try {
       final data = await repository.getOtherVideoChallenges(studentId, types);
-      emit(ChallengeFetchSuccess(data: data));
+      emit(ChallengeFetchSuccess(challenges: data));
     } catch (e) {
       emit(ChallengeFetchFailed(message: e.toString()));
     }

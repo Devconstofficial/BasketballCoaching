@@ -36,8 +36,8 @@ class ChallengeFetchLoading extends VideoState {
 }
 
 class ChallengeFetchSuccess extends VideoState {
-  const ChallengeFetchSuccess({required List<VideoChallenge> data})
-      : super(videoChallenges: data);
+  const ChallengeFetchSuccess({required List<VideoChallenge> challenges})
+      : super(videoChallenges: challenges);
 }
 
 class ChallengeFetchFailed extends VideoState {
