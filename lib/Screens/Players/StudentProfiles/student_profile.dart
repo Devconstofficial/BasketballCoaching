@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:basketball_coaching/Components/firebaseImageWidget.dart';
 import 'package:basketball_coaching/Components/main_button.dart';
+import 'package:basketball_coaching/Components/my_snackbar.dart';
 import 'package:basketball_coaching/Screens/Players/StudentProfiles/Widgets/profile_container.dart';
 import 'package:basketball_coaching/Screens/Players/StudentProfiles/Widgets/score_container.dart';
 import 'package:basketball_coaching/Screens/login.dart';
@@ -26,6 +28,9 @@ class _StudentProfileState extends State<StudentProfile> {
   bool logout = false;
   String? name;
   bool loaded = false;
+  String? profile;
+  String? newProfile;
+  String? currentProfile;
   @override
   initState() {
     super.initState();
@@ -33,14 +38,39 @@ class _StudentProfileState extends State<StudentProfile> {
   }
 
   Future<void> getUserData() async {
+    StudentCubit studentCubit = BlocProvider.of<StudentCubit>(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('user_id');
-    StudentCubit studentCubit = BlocProvider.of<StudentCubit>(context);
     Student? student = await studentCubit.getStudentById(userId!);
     setState(() {
       name = student!.name;
       loaded = true;
+      profile = student!.profile == "avatars/avatar1.png"
+          ? "assets/images/studentprofile.png"
+          : "assets/images/girlbitmoji.png";
+      currentProfile = student.profile;
     });
+  }
+
+  void handleImageSelection(String selectedImage) {
+    if (selectedImage == 'boy') {
+      setState(() {
+        newProfile = "avatars/avatar1.png";
+        profile = "assets/images/studentprofile.png";
+      });
+    } else if (selectedImage == 'girl') {
+      setState(() {
+        newProfile = "avatars/avatar2.png";
+        profile = "assets/images/girlbitmoji.png";
+      });
+    }
+  }
+
+  Future<void> updateProfile() async {
+    StudentCubit studentCubit = BlocProvider.of<StudentCubit>(context);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+    await studentCubit.updateProfile(userId!, newProfile!);
   }
 
   @override
@@ -65,8 +95,9 @@ class _StudentProfileState extends State<StudentProfile> {
                     width: 393.w,
                     height: 334.h,
                     decoration: ShapeDecoration(
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/studentprofile.png"),
+                      color: Colors.blue,
+                      image: DecorationImage(
+                        image: AssetImage(profile!),
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(
@@ -82,7 +113,6 @@ class _StudentProfileState extends State<StudentProfile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const ScoreContainer(),
                         SizedBox(
                           height: 10.h,
                         ),
@@ -115,11 +145,25 @@ class _StudentProfileState extends State<StudentProfile> {
                         SizedBox(
                           height: 10.h,
                         ),
-                        const ProfileContainer(),
+                        ProfileContainer(
+                          onImageSelected: handleImageSelection,
+                        ),
                         SizedBox(
                           height: 17.h,
                         ),
-                        const MainButton(text: 'Save Changes'),
+                        GestureDetector(
+                            onTap: () async {
+                              if (newProfile != null &&
+                                  newProfile != currentProfile) {
+                                await updateProfile();
+                                SnackBarHelper.showSnackbar(
+                                    context, "Profile Updated Successfully");
+                              } else {
+                                SnackBarHelper.showSnackbar(
+                                    context, "Profile already the same");
+                              }
+                            },
+                            child: const MainButton(text: 'Save Changes')),
                         SizedBox(
                           height: 23.h,
                         ),
@@ -140,7 +184,7 @@ class _StudentProfileState extends State<StudentProfile> {
                                 width: 18.w,
                               ),
                               Text(
-                                'delete profile',
+                                'logout profile',
                                 style: TextStyle(
                                   color: const Color(0xFFAB7CE6),
                                   fontSize: 16.sp,

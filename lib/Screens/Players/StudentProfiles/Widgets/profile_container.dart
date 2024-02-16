@@ -3,7 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfileContainer extends StatefulWidget {
-  const ProfileContainer({super.key});
+  final Function(String) onImageSelected;
+
+  const ProfileContainer({Key? key, required this.onImageSelected})
+      : super(key: key);
 
   @override
   State<ProfileContainer> createState() => _ProfileContainerState();
@@ -16,6 +19,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
   void _onItemSelected(String item) {
     setState(() {
       selected = item;
+      widget.onImageSelected(selected!);
     });
   }
 
@@ -42,7 +46,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
             height: 15.h,
           ),
           Text(
-            'select display avatar',
+            'Select display avatar',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
@@ -68,7 +72,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                   alignment: Alignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/elipse1.png',
+                      'assets/images/cardimage.png',
                     ),
                     if (selected == 'boy')
                       SvgPicture.asset(
@@ -90,7 +94,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                   alignment: Alignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/cardimage.png',
+                      'assets/images/elipse1.png',
                     ),
                     if (selected == 'girl')
                       SvgPicture.asset(

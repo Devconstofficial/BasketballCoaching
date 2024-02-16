@@ -56,7 +56,6 @@ class StudentCubit extends Cubit<StudentState> {
   Future<void> updateProfile(String studentId, String newProfile) async {
     try {
       await repository.updateProfile(studentId, newProfile);
-      getAllStudents();
     } catch (e) {
       emit(StudentFetchFailed(message: e.toString()));
     }

@@ -139,10 +139,7 @@ class StudentDataProvider {
     try {
       final String studentId = generateStudentRandomId();
       Student newStudent = Student(
-          studentId: studentId,
-          name: name,
-          totalScore: 0,
-          profile: "avatars/avatar2.png");
+          studentId: studentId, name: name, profile: "avatars/avatar2.png");
       final CollectionReference studentsCollection =
           FirebaseFirestore.instance.collection('students');
       await _firestore
