@@ -50,7 +50,7 @@ class _DropDownState extends State<PreviousMonthDropDown> {
                 ),
                 icon: const Icon(
                   Icons.arrow_drop_down,
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 243, 223, 248),
                 ),
                 onChanged: (String? newValue) {
                   setState(() {
@@ -67,11 +67,13 @@ class _DropDownState extends State<PreviousMonthDropDown> {
                             value,
                             style: TextStyle(
                               color: selectedOption == value
-                                  ? Colors.white
+                                  ? const Color.fromARGB(255, 243, 223, 248)
                                   : const Color(0xFF7A797B),
-                              fontSize: selectedOption == value ? 28.sp : 12.sp,
+                              fontSize: selectedOption == value ? 24.sp : 12.sp,
                               fontFamily: 'Jua',
-                              fontWeight: FontWeight.w400,
+                              fontWeight: selectedOption == value
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               height: 0,
                             ),
                           ),

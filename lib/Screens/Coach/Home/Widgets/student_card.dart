@@ -3,8 +3,10 @@ import 'package:basketball_coaching/Screens/Coach/AddProgress/add_progress.dart'
 import 'package:basketball_coaching/Screens/Coach/Home/Widgets/card_button.dart';
 import 'package:basketball_coaching/Screens/Coach/Progress/view_progress.dart';
 import 'package:basketball_coaching/app_navigations/custom_navigate.dart';
+import 'package:basketball_coaching/firebase/coach_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../cubits/students/cubit.dart';
 
@@ -151,8 +153,11 @@ class StudentsCard extends StatelessWidget {
     );
   }
 
-  void _onDeletePressed(BuildContext context) {
+  void _onDeletePressed(BuildContext context) async {
     final studentCubit = BlocProvider.of<StudentCubit>(context);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
     studentCubit.deleteStudent(studentId);
+    CoachAuth().deleteStudentFromCoach(userId!, studentId);
   }
 }

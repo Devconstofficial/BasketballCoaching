@@ -111,4 +111,31 @@ class CoachAuth {
       print('Error updating coach students: $e');
     }
   }
+
+  Future<void> deleteStudentFromCoach(String coachId, String studentId) async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> coachDocument =
+          await FirebaseFirestore.instance
+              .collection('coaches')
+              .doc(coachId)
+              .get();
+
+      if (coachDocument.exists) {
+        List<String> students =
+            List<String>.from(coachDocument.data()?['students']);
+        students.remove(studentId);
+        await FirebaseFirestore.instance
+            .collection('coaches')
+            .doc(coachId)
+            .update({
+          'students': students,
+        });
+        print('Student $studentId deleted from coach $coachId');
+      } else {
+        print('Coach with ID $coachId not found');
+      }
+    } catch (e) {
+      print('Error deleting student from coach: $e');
+    }
+  }
 }

@@ -42,16 +42,14 @@ class _DropDownState extends State<PreviousMonthDropDown> {
                 isExpanded: true,
                 value: selectedOption,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: const Color.fromARGB(255, 224, 206, 228),
                   fontSize: 32.sp,
                   fontFamily: 'Jua',
                   fontWeight: FontWeight.w400,
                   height: 0,
                 ),
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.arrow_drop_down,
+                    color: Color.fromARGB(255, 243, 223, 248)),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedOption = newValue;
@@ -67,11 +65,13 @@ class _DropDownState extends State<PreviousMonthDropDown> {
                             value,
                             style: TextStyle(
                               color: selectedOption == value
-                                  ? Colors.white
+                                  ? const Color.fromARGB(255, 243, 223, 248)
                                   : const Color(0xFF7A797B),
-                              fontSize: selectedOption == value ? 28.sp : 12.sp,
+                              fontSize: selectedOption == value ? 24.sp : 12.sp,
                               fontFamily: 'Jua',
-                              fontWeight: FontWeight.w400,
+                              fontWeight: selectedOption == value
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               height: 0,
                             ),
                           ),
